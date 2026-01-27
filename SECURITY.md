@@ -243,3 +243,30 @@ Ele registra, de forma imutável, eventos que **já foram confiados** fora dele.
 
 A blockchain não decide.  
 Ela testemunha.
+
+
+## 14. Resistência a Replay (Anti-Replay Nativo)
+
+O Proof of Event (PoE) é **intrinsecamente resistente a ataques de replay**.
+
+Cada evento submetido ao protocolo DEVE referenciar explicitamente o
+`previous_event_hash` correspondente ao último evento aceito no ledger
+canônico no momento da submissão.
+
+Como consequência:
+
+- Um evento só é válido em **um único ponto da linha do tempo lógica**;
+- Eventos reenviados fora de ordem são **deterministicamente rejeitados**;
+- Não existe reutilização válida de eventos já processados;
+- Não é necessário o uso de nonces, timestamps confiáveis ou listas de replay.
+
+A resistência a replay **emerge da estrutura do protocolo**, não de regras
+auxiliares.
+
+Qualquer tentativa de replay resulta na quebra do encadeamento criptográfico
+e na rejeição imediata pelo FIFO soberano (`ERR_BAD_PREV_HASH`).
+
+Essa propriedade elimina classes inteiras de ataques comuns em sistemas
+distribuídos e blockchains tradicionais, mantendo o protocolo simples,
+auditável e determinístico.
+
