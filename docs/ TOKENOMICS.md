@@ -1,271 +1,314 @@
-# Proof of Event (PoE)
-## Tokenomics — Modelo Econômico do Protocolo
+# TOKENOMICS v0.1 — Proof of Event (PoE)
+Implementação Econômica Normativa (Off-chain) com Congestion Fee
 
 **Versão:** 0.1  
-**Status:** Definição Econômica Inicial (Normativa)  
-**Compatível com:** SPEC.md v0.1 / protocol v0.1  
+**Status:** Normativo (regras mecânicas executáveis)  
+**Compatível com:** `SPEC.md` v0.1 + `protocol/v0.1.md`  
 **Autor:** Armando José Freire de Melo  
+**Licença:** Apache 2.0  
 
 ---
 
-## 1. Objetivo do Token PoE
+## 0. Escopo e Separação de Responsabilidades
 
-O **Token PoE** é o ativo econômico nativo do protocolo Proof of Event.
+Este documento define **parâmetros numéricos** e **regras mecânicas** para:
+- cobrança de taxas (fees) para submissão no FIFO;
+- queima (burn) obrigatória;
+- redistribuição operacional;
+- taxa adicional de congestionamento destinada exclusivamente à Plataforma;
+- regras de medição para pagamentos por trabalho (epochs e units).
 
-Sua função é **liquidar o uso da infraestrutura**, coordenar incentivos operacionais
-e permitir a remuneração de participantes que executam trabalho real no sistema.
+### 0.1 O que é PoE Core (Camada 2)
+O **PoE Core** (FIFO + ledger append-only) tem responsabilidade mínima:
+- exigir **formato** + **encadeamento** (`previous_event_hash`) + **ordem FIFO**;
+- registrar e distribuir eventos em ordem;
+- armazenadores replicam e mantêm o ledger.
 
-O token **não** representa:
+O PoE Core **não executa** queima, redistribuição, payout, exchange ou preço.
 
-- participação societária;
-- direito a dividendos;
-- governança política do protocolo;
-- promessa de retorno financeiro.
+### 0.2 O que é a Camada Econômica (Off-chain)
+A **camada econômica off-chain** (implementação/serviço externo) é quem:
+- verifica saldo e prova de pagamento para entrada no FIFO;
+- executa burn;
+- calcula pools e payouts por epoch;
+- publica relatórios auditáveis e registra o hash do relatório no PoE.
 
----
-
-## 2. Natureza do Token
-
-- Tipo: **Ativo digital / criptomoeda**
-- Função principal: **token de uso e liquidação operacional**
-- Papel econômico: **meio de pagamento do protocolo**
-- Governança: **nenhuma** (governança fora do escopo do token)
-
-O valor do token emerge do uso do protocolo e da demanda de mercado, sob risco total
-dos participantes.
-
----
-
-## 3. Oferta (Supply)
-
-### 3.1 Oferta Total
-
-- **Supply fixo e finito**
-- Criado **uma única vez** (genesis)
-- Não inflacionário
-- Não há mint contínuo
-
-> O protocolo **NUNCA** cria novos tokens após o genesis.
+> O token não promete lucro, não define preço e não opera exchange.
 
 ---
 
-## 4. Entrada em Circulação
+## 1. Ativo Nativo
 
-O Token PoE entra em circulação por **trabalho executado** e por aquisição em mercado secundário.
-
-### 4.1 Canais de Distribuição Inicial
-
-- **Armazenadores:** recebem tokens por armazenamento e replicação do ledger.
-- **Verificadores / Oráculos:** recebem tokens por verificação off-chain e submissão válida.
-- **Plataforma:** recebe tokens por operação do FIFO e manutenção do ecossistema.
-
-Não existe:
-
-- airdrop promocional;
-- recompensa por holding;
-- yield automático.
+- **Nome:** Token PoE  
+- **Símbolo:** `POE`  
+- **Decimais:** `18`  
+- **Tipo:** criptomoeda / ativo digital de liquidação operacional  
+- **Governança:** nenhuma
 
 ---
 
-## 5. Uso do Token (Demanda)
+## 2. Oferta (Supply)
 
-### 5.1 Pagamento do FIFO
+### 2.1 Supply Total (Fixado no Genesis)
+- **Supply total:** `1.000.000.000 POE`
+- Criado **uma única vez** no genesis.
+- **Nenhum mint adicional** é permitido em v0.1.
 
-Para submeter um evento ao PoE, o verificador/oráculo **DEVE** pagar uma taxa em Token PoE.
-
-Esse pagamento:
-
-- é obrigatório;
-- é feito **antes** do evento entrar no FIFO;
-- não concede prioridade;
-- não altera a ordem.
-
-### 5.2 Quem paga com Token PoE
-
-- verificadores;
-- oráculos;
-- tokenizadores;
-- operadores de sistemas integrados.
-
-> O **cliente final** paga em moeda fiduciária fora do protocolo.
+### 2.2 Queima Reduz Supply
+- Burn é destruição irreversível de tokens (supply diminui).
+- Não existe “nascer mais token” após queima.
 
 ---
 
-## 6. Fluxo Econômico (Loop com Queima Protocolar)
+## 3. Alocação Genesis (Distribuição Inicial)
 
-1. O **cliente final** paga o serviço em moeda fiduciária (USD, BRL, EUR).
-2. O **verificador/oráculo** executa a verificação do evento fora do PoE (Camada 1).
-3. O **verificador** adquire Token PoE por meio de mercado secundário.
-4. O **verificador** paga a taxa de uso do FIFO em Token PoE.
-5. Ao receber o pagamento, o protocolo aplica a liquidação econômica:
-   - **10% dos tokens pagos são queimados permanentemente**;
-   - **90% dos tokens são redistribuídos operacionalmente**.
-6. Os tokens redistribuídos retornam ao mercado por venda ou reutilização.
-7. O ciclo se repete conforme o uso do protocolo.
+Buckets fixos (percentual do supply inicial):
 
-> A queima é **obrigatória, automática e irrevogável**.  
-> Não existe configuração, exceção ou adiamento da queima.
+1. **STORER_FOUNDERS:** `40%` = `400.000.000 POE`  
+2. **PLATFORM_RESERVE:** `30%` = `300.000.000 POE`  
+3. **VERIFIER_FOUNDERS:** `20%` = `200.000.000 POE`  
+4. **DEV_FUND:** `10%` = `100.000.000 POE`  
 
----
+### 3.1 Vesting (v0.1)
+- **STORER_FOUNDERS (400M):** 25% no genesis + 75% linear em 12 meses (diário)  
+- **VERIFIER_FOUNDERS (200M):** 25% no genesis + 75% linear em 12 meses (diário)  
+- **PLATFORM_RESERVE (300M):** 40% no genesis + 60% linear em 36 meses (diário)  
+- **DEV_FUND (100M):** 0% no genesis + 100% linear em 24 meses (diário)
 
-## 7. Redistribuição do Token
-
-A redistribuição ocorre como **pagamento por trabalho efetivo**, não por especulação.
-
-### 7.1 Regra de Redistribuição (Normativa)
-
-Dos tokens pagos ao FIFO:
-
-- **10%** são queimados permanentemente;
-- **90%** são redistribuídos da seguinte forma:
-  - **40%** para Armazenadores (armazenamento e replicação do ledger);
-  - **30%** para Verificadores/Oráculos (trabalho off-chain);
-  - **20%** para Plataforma (operação do FIFO e infraestrutura).
-
-Esses percentuais são parte integrante do protocolo PoE v0.1 e **NÃO podem ser alterados**
-sem versionamento formal do protocolo.
-
-### 7.2 Critérios Operacionais (Implementação)
-
-A implementação define critérios **mecânicos e auditáveis** para cálculo de distribuição,
-por exemplo:
-
-- eventos efetivamente armazenados por nó;
-- disponibilidade (uptime) medida por janela;
-- participação em replicação/sincronização.
-
-A implementação **NÃO** pode introduzir discriminação subjetiva entre participantes
-para a mesma classe de trabalho.
+Regra: tokens travados **não contam** como disponíveis para pagamentos até liberados.
 
 ---
 
-## 8. Ausência de Incentivos Financeiros Promissórios
+## 4. Identidades de Trabalho (Sem Governança)
 
-O Token PoE:
+A redistribuição exige identificar “quem trabalhou”.
 
-- não garante valorização;
-- não garante liquidez;
-- não garante retorno;
-- não garante proteção contra perda.
+Em v0.1:
+- **verifier_id:** `bytes32` (hash de chave pública/identidade do verificador)  
+- **storer_id:** `bytes32` (hash de chave pública/identidade do armazenador)
 
-Não há:
+Uso:
+- `verifier_id` aparece no evento (ex.: `source_id`)  
+- `storer_id` aparece na `Commitment_Proof`
 
-- staking;
-- slashing;
-- lock obrigatório;
-- dividendos;
-- buyback protocolar.
+> Isso não é “identidade civil”. É apenas ID mecânico de remuneração.
 
 ---
 
-## 9. Ataques Econômicos e Mitigações (Resumo)
+## 5. Estrutura de Taxas (Fee Model)
 
-### 9.1 Spam
+A taxa total para entrada no FIFO:
 
-- Spam custa token.
-- Uso abusivo torna-se economicamente inviável.
+1. **Base Fee** (registro no FIFO)  
+2. **Blob Fee** (peso físico por bytes, se houver blob)  
+3. **Retention Fee** (multiplicador por tempo de retenção do blob)  
+4. **Congestion Fee** (pico de demanda / fila cheia)
 
-### 9.2 Sybil
-
-- Criar identidades não reduz custo de uso.
-- Cada evento exige pagamento em Token PoE.
-
-### 9.3 Centralização
-
-- Não há poder político associado ao token.
-- Acumular token **não dá controle do protocolo**.
-
-### 9.4 Acumulação Excessiva (Hoarding)
-
-A **queima protocolar** reduz o supply ao longo do tempo e desencoraja a acumulação
-infinita, forçando circulação econômica para uso contínuo do FIFO.
+### 5.1 Unidades
+- Todas as taxas são cobradas em **POE** (`10^-18 POE`).
+- Arredondamento: **sempre para cima** (ceil) na unidade mínima.
 
 ---
 
-## 10. Mercado Secundário (Requisito Operacional)
+## 6. Parâmetros Numéricos Fixos (v0.1)
 
-A existência de **mercado secundário funcional** para o Token PoE é condição necessária
-para a operação contínua do protocolo.
+### 6.1 Base Fee
+- **BASE_FEE:** `0,10 POE` por evento aceito no FIFO.
 
-O protocolo:
+### 6.2 Blob Fee (por tamanho)
+- **BLOB_FEE_PER_KIB:** `0,002 POE` por `1 KiB` (1024 bytes)
+- `blob_kib = ceil(blob_bytes / 1024)`
+- `blob_fee = blob_kib * 0,002 POE`
 
-- não opera exchange;
-- não garante liquidez;
-- mas assume a existência de meios de aquisição do token por participantes.
+### 6.3 Retention Fee (multiplicador)
+- `RETENTION_30D_MULT = 1x`
+- `RETENTION_365D_MULT = 2x`
+- `RETENTION_PERMANENT_MULT = 6x`
 
-Sem acesso ao Token PoE, não há submissão ao FIFO.
+`retained_blob_fee = blob_fee * retention_multiplier`
 
----
+### 6.4 Hard Limits (mesmo pagando)
+- `MAX_BLOB_BYTES = 5.242.880` (5 MiB)
+- `MAX_EVENT_JSON_BYTES = 8.192` (8 KiB)
 
-## 11. Parâmetros Fora do Escopo
+Acima disso: rejeitar com **`ERR_PAYLOAD_TOO_LARGE`**.
 
-Este documento **não define**:
+> **Normativo:** adicione `ERR_PAYLOAD_TOO_LARGE` na lista de erros do `protocol/v0.1.md` para ficar consistente.
 
-- preço do token;
-- market making;
-- listagem em exchanges;
-- estratégias de estabilização de preço.
+### 6.5 Congestion Fee (Taxa de Congestionamento)
+Parâmetros:
+- `Q0 = 100`
+- `QMAX = 10.000`
+- `CONGESTION_CAP_MULT = 20x`
 
-Esses aspectos pertencem ao mercado, não ao núcleo do protocolo.
+**Definição normativa de `queue_size`:**  
+`queue_size` é o número de submissões **pendentes de aceitação** no FIFO no instante em que a submissão é recebida (backlog atual da fila do gateway).
 
----
+Regra:
+- Se `queue_size <= Q0` ⇒ `congestion_fee = 0`
+- Se `queue_size > Q0` ⇒
 
-## 12. Transparência e Auditoria
+```text
+q = min(queue_size, QMAX)
+mult = ceil_div((q - Q0), Q0)      // 1x, 2x, 3x...
+mult = min(mult, CONGESTION_CAP_MULT)
+congestion_fee = BASE_FEE * mult
 
-Todos os fluxos de uso do Token PoE são:
+## Normativo (Congestion Fee)
 
-- verificáveis;
-- rastreáveis;
-- auditáveis externamente.
-
-O protocolo não oculta fluxos econômicos.
-
----
-
-## 13. Declarações e Avisos de Risco
-
-1. **Não é participação societária**  
-   O Token PoE não representa propriedade, controle administrativo ou direitos sobre receitas.
-
-2. **Sem promessa de lucro**  
-   Não há promessa, garantia ou expectativa contratual de valorização.
-
-3. **Risco total de mercado**  
-   O valor do token pode cair significativamente, inclusive até **zero**.
-
-4. **Responsabilidade fiscal e regulatória**  
-   Participantes são responsáveis por obrigações fiscais e conformidade aplicáveis
-   em sua jurisdição.
+- A congestion fee **não altera ordem**.
+- A congestion fee **não compra prioridade**.
+- A congestion fee **vai 100% para a Plataforma**.
 
 ---
 
-## 14. Encerramento
+## 7. Taxa Total a Pagar (Entrada no FIFO)
 
-O Token PoE existe para **pagar infraestrutura**, remunerar trabalho operacional e impor
-custo econômico real ao uso do FIFO.
+Defina:
 
-**Quem usa, paga.  
-Quem trabalha, recebe.  
-Quem segura, assume risco de mercado.**
+- `protocol_fee = BASE_FEE + retained_blob_fee`
+- `total_fee = protocol_fee + congestion_fee`
 
-### 15. Política de Tarifação do FIFO
+A camada econômica **DEVE** recusar a submissão se não houver saldo/prova para `total_fee`.
 
-O protocolo PoE define um valor base de uso do FIFO,
-expresso em Token PoE, determinado pela Plataforma
-com base em custos operacionais médios.
+O mecanismo de pagamento é **off-chain**. O FIFO só recebe “prova/ok” da camada econômica conforme implantação.
 
-O protocolo NÃO fixa equivalência com moeda fiduciária.
+---
 
-Em cenários de alta demanda, o FIFO pode aplicar
-uma taxa adicional de congestionamento, calculada
-de forma mecânica conforme o estado da fila.
+## 8. Liquidação Econômica (Burn + Redistribuição) — Off-chain
 
-A taxa de congestionamento:
-- não altera a ordem FIFO;
-- não concede prioridade;
-- é destinada exclusivamente à Plataforma;
-- existe para absorver custos operacionais em picos de uso.
+### 8.1 Separação Obrigatória
 
-A queima protocolar é parte inseparável do mecanismo econômico do PoE
-e não constitui política monetária ajustável.
+A liquidação separa a taxa em duas partes:
+
+- **Protocol Fee** (`protocol_fee`)
+- **Congestion Fee** (`congestion_fee`)
+
+Burn e redistribuição aplicam somente sobre `protocol_fee`.  
+`congestion_fee` vai integralmente para Plataforma.
+
+### 8.2 Burn
+
+- `BURN_RATE = 10%` sobre `protocol_fee`
+- `burn_amount = protocol_fee * 0,10`
+- `distributable = protocol_fee - burn_amount`
+
+Burn é obrigatório/irrevogável na camada econômica.
+
+### 8.3 Redistribuição (sobre `distributable`)
+
+- **STORERS:** `40%`
+- **VERIFIERS:** `30%`
+- **PLATFORM:** `20%`
+
+Cálculo:
+
+- `to_storers   = distributable * 0,40`
+- `to_verifiers = distributable * 0,30`
+- `to_platform  = distributable * 0,20`
+- `to_platform += congestion_fee`
+
+---
+
+## 9. Medição de Trabalho (Pagamentos por Epoch)
+
+Pagamentos ocorrem por **epochs** para reduzir custo operacional.
+
+### 9.1 Epoch
+
+- `EPOCH_LENGTH = 24h`
+- Fuso: `UTC`
+- `epoch_id = YYYY-MM-DD (UTC)`
+
+### 9.2 Unidades — Verificadores
+
+Cada evento aceito no FIFO conta **1 unidade** para o `verifier_id` do evento.
+
+### 9.3 Unidades — Armazenadores
+
+Um armazenador ganha unidade quando:
+
+1. recebeu o evento do FIFO (sequência canônica),
+2. realizou append no ledger local,
+3. emitiu `Commitment_Proof` válida.
+
+`Commitment_Proof` é opcional no PoE Core, mas obrigatória para remuneração nesta tokenomics v0.1.
+
+### 9.4 Elegibilidade — Retenção Completa
+
+Para receber pagamento como armazenador, o nó deve:
+
+- manter ledger completo desde GENESIS até head (segmentado por dia, contínuo);
+- estar sincronizado no hash canônico do ledger.
+
+---
+
+## 10. Pools e Payouts por Epoch
+
+Para cada epoch:
+
+- `pool_storers(epoch)` = soma de `to_storers`
+- `pool_verifiers(epoch)` = soma de `to_verifiers`
+- `pool_platform(epoch)` = soma de `to_platform` + todas as `congestion_fee`
+
+### 10.1 Payout Pro-rata
+
+- `payout(storer_id) = pool_storers * units(storer_id) / total_units_storers`
+- `payout(verifier_id) = pool_verifiers * units(verifier_id) / total_units_verifiers`
+
+Plataforma recebe `pool_platform` integral.
+
+### 10.2 Auditoria Pública (Normativo)
+
+Ao fechar o epoch, a Plataforma deve publicar relatório auditável contendo:
+
+- `epoch_id`, `total_events`, `burn_total`
+- `pool_storers`, `pool_verifiers`, `pool_platform`
+- lista `(id, units, payout)` para storers e verifiers
+- hash `SHA-256` do relatório
+
+O hash do relatório **DEVE** ser registrado como evento no PoE (`payload_hash` do relatório).
+
+---
+
+## 11. Proibição de Política Monetária Ajustável (v0.1)
+
+Em v0.1:
+
+- supply fixo
+- burn rate fixo
+- splits fixos
+- `BASE_FEE` e parâmetros fixos
+
+Mudanças só via versionamento (`v0.2+`), com migração explícita.
+
+---
+
+## 12. Riscos e Avisos (Sem Promessa)
+
+O token:
+
+- não garante valorização, retorno, liquidez
+- não é governança
+- não é dividendos
+
+O cliente final paga em fiat fora do protocolo; operadores compram `POE` no mercado para usar o FIFO.
+
+---
+
+## 13. Encerramento
+
+Este modelo econômico v0.1 é desenhado para:
+
+- tornar spam caro;
+- impedir DoS por payload gigante (fees + limites);
+- reduzir supply com uso (burn);
+- remunerar trabalho real (storers e verifiers);
+- proteger infraestrutura em picos (congestion fee 100% plataforma);
+- manter previsibilidade (parâmetros fixos em v0.1).
+
+**Quem usa, paga.**  
+**Quem trabalha, recebe.**  
+**Congestionamento protege a infraestrutura — não compra prioridade.**
+
 
