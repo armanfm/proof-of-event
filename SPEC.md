@@ -183,13 +183,8 @@ O token circula. Não há emissão adicional dentro do protocolo.
 
 Ao registrar um evento, um armazenador **PODE** emitir uma prova de compromisso:
 
-```plaintext
-Commitment_Proof {
-    event_hash:       bytes32
-    store_node_id:    bytes32
-    store_timestamp:  uint64
-    signature:        bytes
-}
+<img width="373" height="172" alt="image" src="https://github.com/user-attachments/assets/2f519a54-0edc-4f49-b168-ada8f6d666e2" />
+
 <img width="304" height="208" alt="image" src="https://github.com/user-attachments/assets/8d15fce5-d31d-498e-b459-cdb090c02883" />
 Essa prova atesta que um nó específico testemunhou e registrou aquele evento.
 
