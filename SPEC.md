@@ -185,7 +185,7 @@ Ao registrar um evento, um armazenador **PODE** emitir uma prova de compromisso:
 
 <img width="373" height="172" alt="image" src="https://github.com/user-attachments/assets/2f519a54-0edc-4f49-b168-ada8f6d666e2" />
 
-<img width="304" height="208" alt="image" src="https://github.com/user-attachments/assets/8d15fce5-d31d-498e-b459-cdb090c02883" />
+
 Essa prova atesta que um nó específico testemunhou e registrou aquele evento.
 
 ---
