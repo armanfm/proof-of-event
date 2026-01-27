@@ -248,6 +248,24 @@ custo econômico real ao uso do FIFO.
 Quem trabalha, recebe.  
 Quem segura, assume risco de mercado.**
 
+### 15. Política de Tarifação do FIFO
+
+O protocolo PoE define um valor base de uso do FIFO,
+expresso em Token PoE, determinado pela Plataforma
+com base em custos operacionais médios.
+
+O protocolo NÃO fixa equivalência com moeda fiduciária.
+
+Em cenários de alta demanda, o FIFO pode aplicar
+uma taxa adicional de congestionamento, calculada
+de forma mecânica conforme o estado da fila.
+
+A taxa de congestionamento:
+- não altera a ordem FIFO;
+- não concede prioridade;
+- é destinada exclusivamente à Plataforma;
+- existe para absorver custos operacionais em picos de uso.
+
 A queima protocolar é parte inseparável do mecanismo econômico do PoE
 e não constitui política monetária ajustável.
 
