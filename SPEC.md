@@ -243,4 +243,21 @@ O Proof of Event existe para registrar eventos como fatos criptográficos, não 
 
 **A blockchain não decide. Ela testemunha.**
 
+### Regra de Retenção Completa do Ledger (Normativa)
+
+Um Armazenador PoE DEVE manter uma cópia completa e contínua
+de TODOS os segmentos históricos do ledger determinístico,
+desde o GENESIS até o evento mais recente.
+
+A retenção parcial do ledger é PROIBIDA.
+
+Um nó que:
+- possua apenas parte dos ledgers diários;
+- descarte ledgers históricos;
+- inicie operação sem sincronizar todo o histórico;
+
+É considerado FORA DE SINCRONIA
+e NÃO é um Armazenador PoE válido.
+
+
 
