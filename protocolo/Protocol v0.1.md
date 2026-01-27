@@ -4,7 +4,7 @@
 **Versão:** 0.1  
 **Status:** Operacional (executável no papel)  
 **Compatível com:** `SPEC.md` v0.1  
-**Autor:** Armando José Freire de Melo  
+**Autor:** Armando Freire  
 
 ---
 
