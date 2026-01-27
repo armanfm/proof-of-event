@@ -1,1 +1,93 @@
-# proof-of-event
+# Proof of Event (PoE)
+
+**A blockchain não decide. Ela testemunha.**
+
+Proof of Event (PoE) é um protocolo de registro determinístico de eventos externos.
+Seu objetivo é fornecer uma prova **imutável, auditável e reexecutável** de que
+um evento ocorreu, **sem consenso, sem votação e sem julgamento on-chain**.
+
+PoE não cria verdade.  
+PoE não interpreta significado.  
+PoE apenas **testemunha eventos cuja ocorrência já é aceita fora do sistema**.
+
+---
+
+## 🎯 Objetivo do Projeto
+
+O PoE foi projetado para ambientes onde:
+
+- o consenso sobre o evento **já existe fora da blockchain**
+- auditoria, rastreabilidade e reexecução são mais importantes que governança
+- mecanismos como PoW, PoS, staking ou votação são **indesejáveis**
+- simplicidade, determinismo e compatibilidade institucional são requisitos
+
+Exemplos de uso:
+- eventos institucionais
+- registros legais
+- logs auditáveis
+- sensores e sistemas industriais
+- provas de execução e ocorrência
+
+---
+
+## 🧱 Arquitetura (Visão Geral)
+
+O protocolo é dividido em camadas **estritamente desacopladas**:
+
+- **Camada 1 — Evento Externo**  
+  Onde o evento acontece (fora do escopo do PoE).
+
+- **Camada 2 — Ledger Determinístico (Núcleo PoE)**  
+  Ledger append-only, ordenado por FIFO, encadeado por hash, sem consenso.
+
+- **Camada 3 — Ledger Semântico (Opcional)**  
+  Camada de interpretação, contexto ou integração institucional.  
+  Nunca interfere na validade ou ordem do ledger PoE.
+
+> ⚠️ Apenas a Camada 2 faz parte do protocolo PoE.
+
+---
+
+## ❌ O que o PoE NÃO é
+
+- Não é uma criptomoeda
+- Não é um protocolo de consenso
+- Não é um sistema de governança
+- Não é uma DAO
+- Não é um árbitro de verdade ou significado
+- Não recompensa usuários finais com tokens
+
+---
+
+## 📜 Especificação Técnica
+
+A definição formal, completa e normativa do protocolo está em:
+
+➡️ **[`/SPEC.md`](./SPEC.md)**
+
+O SPEC é a fonte de verdade do projeto.
+
+---
+
+## 🔬 Status do Projeto
+
+- 🧠 Fundação conceitual: **consolidada**
+- 📐 Especificação técnica: **em elaboração**
+- ⚙️ Implementação de referência: **a definir**
+- 💰 Modelo econômico: **opcional e desacoplado**
+
+Este repositório começa pela **especificação**, não pela implementação.
+
+---
+
+## ⚖️ Licença
+
+Apache License 2.0
+
+Autor da especificação conceitual:  
+**Armando José Freire de Melo**
+
+---
+
+> PoE existe para registrar eventos como fatos criptográficos,  
+> não como decisões sociais.
