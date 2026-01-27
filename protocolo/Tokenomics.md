@@ -247,3 +247,7 @@ custo econômico real ao uso do FIFO.
 **Quem usa, paga.  
 Quem trabalha, recebe.  
 Quem segura, assume risco de mercado.**
+
+A queima protocolar é parte inseparável do mecanismo econômico do PoE
+e não constitui política monetária ajustável.
+
