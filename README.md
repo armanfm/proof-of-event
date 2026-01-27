@@ -115,7 +115,7 @@ Este repositório começa pela **especificação**, não pela implementação.
 Apache License 2.0
 
 Autor da especificação conceitual:  
-**Armando José Freire de Melo**
+**Armando Freire**
 
 ---
 
