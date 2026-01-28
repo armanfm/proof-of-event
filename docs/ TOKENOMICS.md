@@ -4,14 +4,14 @@ Implementação Econômica Normativa (Off-chain) com Congestion Fee
 **Versão:** 0.1  
 **Status:** Normativo (regras mecânicas executáveis)  
 **Compatível com:** `SPEC.md` v0.1 + `protocol/v0.1.md`  
-**Autor:** Armando Freire 
+**Autor:** Armando Freire  
 **Licença:** Apache 2.0  
 
 ---
 
 ## 0. Escopo e Separação de Responsabilidades
 
-Este documento define **parâmetros numéricos** e **regras mecânicas** para:
+Este documento define parâmetros numéricos e regras mecânicas para:
 - cobrança de taxas (fees) para submissão no FIFO;
 - queima (burn) obrigatória;
 - redistribuição operacional;
@@ -24,10 +24,10 @@ O **PoE Core** (FIFO + ledger append-only) tem responsabilidade mínima:
 - registrar e distribuir eventos em ordem;
 - armazenadores replicam e mantêm o ledger.
 
-O PoE Core **não executa** queima, redistribuição, payout, exchange ou preço.
+O PoE Core **não executa** burn, redistribuição, payout, exchange ou preço.
 
 ### 0.2 O que é a Camada Econômica (Off-chain)
-A **camada econômica off-chain** (implementação/serviço externo) é quem:
+A camada econômica off-chain (implementação/serviço externo) é quem:
 - verifica saldo e prova de pagamento para entrada no FIFO;
 - executa burn;
 - calcula pools e payouts por epoch;
@@ -38,24 +38,23 @@ A **camada econômica off-chain** (implementação/serviço externo) é quem:
 ---
 
 ## 1. Ativo Nativo
-
 - **Nome:** Token PoE  
 - **Símbolo:** `POE`  
 - **Decimais:** `18`  
 - **Tipo:** criptomoeda / ativo digital de liquidação operacional  
-- **Governança:** nenhuma
+- **Governança:** nenhuma  
 
 ---
 
 ## 2. Oferta (Supply)
 
 ### 2.1 Supply Total (Fixado no Genesis)
-- **Supply total:** `1.000.000.000 POE`
-- Criado **uma única vez** no genesis.
-- **Nenhum mint adicional** é permitido em v0.1.
+- **Supply total:** `1.000.000.000.000 POE`  
+- Criado **uma única vez** no genesis.  
+- **Nenhum mint adicional** é permitido em v0.1.  
 
 ### 2.2 Queima Reduz Supply
-- Burn é destruição irreversível de tokens (supply diminui).
+- Burn é destruição irreversível de tokens (supply diminui).  
 - Não existe “nascer mais token” após queima.
 
 ---
@@ -63,36 +62,16 @@ A **camada econômica off-chain** (implementação/serviço externo) é quem:
 ## 3. Alocação Genesis (Distribuição Inicial)
 
 Buckets fixos (percentual do supply inicial):
-
-## 2. Oferta (Supply)
-
-### 2.1 Supply Total (Fixado no Genesis)
-- **Supply total:** `1.000.000.000.000 POE`
-- Criado **uma única vez** no genesis.
-- **Nenhum mint adicional** é permitido em v0.1.
-
----
-
-## 3. Alocação Genesis (Distribuição Inicial)
-
-Buckets fixos (percentual do supply inicial):
-
 1. **STORER_FOUNDERS:** `50%` = `500.000.000.000 POE`  
 2. **PLATFORM_RESERVE:** `30%` = `300.000.000.000 POE`  
-3. **VERIFIER_FOUNDERS:** `20%` = `200.000.000.000 POE`
+3. **VERIFIER_FOUNDERS:** `20%` = `200.000.000.000 POE`  
 
 ### 3.1 Vesting (v0.1)
 - **STORER_FOUNDERS (500B):** 25% no genesis + 75% linear em 12 meses (diário)  
 - **VERIFIER_FOUNDERS (200B):** 25% no genesis + 75% linear em 12 meses (diário)  
 - **PLATFORM_RESERVE (300B):** 40% no genesis + 60% linear em 36 meses (diário)
 
-Regra: tokens travados **não contam** como disponíveis para pagamentos até liberados.
-
-> Em v0.1 não existe bucket DEV_FUND separado (se você quiser DEV_FUND, tem que tirar percentual de alguém).
-
-
-
-Regra: tokens travados **não contam** como disponíveis para pagamentos até liberados.
+**Regra:** tokens travados **não contam** como disponíveis para pagamentos até liberados.
 
 ---
 
@@ -115,14 +94,13 @@ Uso:
 ## 5. Estrutura de Taxas (Fee Model)
 
 A taxa total para entrada no FIFO:
-
-1. **Base Fee** (registro no FIFO)  
-2. **Blob Fee** (peso físico por bytes, se houver blob)  
-3. **Retention Fee** (multiplicador por tempo de retenção do blob)  
-4. **Congestion Fee** (pico de demanda / fila cheia)
+1. Base Fee (registro no FIFO)  
+2. Blob Fee (peso físico por bytes, se houver blob)  
+3. Retention Fee (multiplicador por tempo de retenção do blob)  
+4. Congestion Fee (pico de demanda / fila cheia)
 
 ### 5.1 Unidades
-- Todas as taxas são cobradas em **POE** (`10^-18 POE`).
+- Todas as taxas são cobradas em **POE** (`10^-18 POE`).  
 - Arredondamento: **sempre para cima** (ceil) na unidade mínima.
 
 ---
@@ -150,9 +128,10 @@ A taxa total para entrada no FIFO:
 
 Acima disso: rejeitar com **`ERR_PAYLOAD_TOO_LARGE`**.
 
-> **Normativo:** adicione `ERR_PAYLOAD_TOO_LARGE` na lista de erros do `protocol/v0.1.md` para ficar consistente.
+> Normativo: adicione `ERR_PAYLOAD_TOO_LARGE` na lista de erros do `protocol/v0.1.md`.
 
 ### 6.5 Congestion Fee (Taxa de Congestionamento)
+
 Parâmetros:
 - `Q0 = 100`
 - `QMAX = 10.000`
