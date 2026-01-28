@@ -1,5 +1,5 @@
 # TOKENOMICS v0.1 — Proof of Event (PoE)
-Implementação Econômica Normativa (Contabilidade Interna) + Congestion Fee
+Implementação Econômica Normativa (Contabilidade Interna Determinística)
 
 **Versão:** 0.1  
 **Status:** Normativo (regras mecânicas executáveis)  
@@ -15,7 +15,8 @@ O PoE **não decide conteúdo** e **não interpreta eventos**.
 O PoE **testemunha**: ordem FIFO + ledger append-only.
 
 A economia do PoE é **contabilidade interna determinística**:  
-cobrança e distribuição de POE obedecem regras fixas, auditáveis e reexecutáveis.
+o consumo de POE ocorre por evento aceito, e a distribuição remunera  
+**exclusivamente o trabalho de armazenamento do ledger**.
 
 ---
 
@@ -26,6 +27,8 @@ cobrança e distribuição de POE obedecem regras fixas, auditáveis e reexecut�
 - **Decimais:** 18  
 - **Governança:** nenhuma  
 
+O POE é um **token técnico de consumo do protocolo**, não um instrumento financeiro.
+
 ---
 
 ## 2. Oferta (Supply)
@@ -34,39 +37,40 @@ cobrança e distribuição de POE obedecem regras fixas, auditáveis e reexecut�
 - **Mint adicional:** proibido em v0.1  
 
 Em v0.1, a emissão é **fechada**:  
-não existe criação infinita por evento.
+não existe criação infinita de tokens por evento.
 
 ---
 
 ## 3. Identidades Mecânicas (Sem Identidade Civil)
 
-Para contabilidade interna automática:
+Para contabilidade interna automática, o protocolo utiliza IDs mecânicos:
 
 - **storer_id:** `bytes32`  
-  Identifica o nó armazenador que realizou o append do ledger.
+  Identifica o nó armazenador que realizou o append canônico do ledger.
 
 - **payer_id:** `bytes32`  
   Identifica quem consome POE para submeter eventos  
-  (verificador, cliente ou Plataforma).
+  (verificador, cliente institucional ou Plataforma).
 
-Esses IDs são **puramente mecânicos**, não representam identidade civil.
+Esses IDs **não representam identidade civil**, apenas endereços técnicos  
+para débito e crédito contábil.
 
 ---
 
 ## 4. Regra Central — Cobrança e Distribuição por Evento
 
-### 4.1 Taxas fixas por evento aceito (v0.1)
+### 4.1 Taxa fixa por evento aceito (v0.1)
 
-- **FEE_PLATFORM = 1 POE**  
-- **FEE_STORER   = 1 POE**
+- **FEE_STORER = 1 POE**
 
 
-TOTAL_FEE_BASE = 2 POE
+TOTAL_FEE_BASE = 1 POE
 
 ## Normativo
 
-- O verificador **NÃO** recebe **POE**.
-- O verificador é **consumidor do protocolo**, não agente remunerado.
+- O verificador **NÃO** recebe **POE**.  
+- A Plataforma **NÃO** recebe **POE on-chain**.  
+- O token **POE remunera exclusivamente** o trabalho de **armazenamento do ledger**.
 
 ---
 
@@ -75,10 +79,11 @@ TOTAL_FEE_BASE = 2 POE
 A liquidação ocorre **somente quando**:
 
 1. o evento foi aceito pelo **FIFO**  
-   *(formato + `previous_event_hash` + ordem FIFO)*, **e**
-2. o evento foi efetivamente gravado no **ledger** *(append confirmado)*.
+   *(formato válido + `previous_event_hash` correto + ordem FIFO)*, **e**
+2. o evento foi efetivamente gravado no **ledger**  
+   *(append confirmado no nó armazenador).*
 
-Se falhar **antes disso**:
+Se a falha ocorrer **antes disso**:
 
 - não há débito;
 - não há crédito;
@@ -86,64 +91,47 @@ Se falhar **antes disso**:
 
 ---
 
-## 4.3 Transferências determinísticas (contabilidade interna)
+## 4.3 Transferência determinística (contabilidade interna)
 
 Ao aceitar e gravar um evento:
 
-- debitar `payer_id` em `TOTAL_FEE_BASE`
+- debitar `payer_id` em **1 POE**
+- creditar `storer_id` em **1 POE**
 
-- creditar:
-  - `platform_id` com **1 POE**
-  - `storer_id` com **1 POE**
+Essa operação é **determinística, reexecutável e auditável**.
 
 ### Normativo
 
-Se `payer_id` não tiver saldo suficiente, a submissão **DEVE** ser recusada **antes do append**, com:
+Se `payer_id` não possuir saldo suficiente, a submissão **DEVE** ser recusada  
+**antes do append**, com:
 
 - `ERR_INSUFFICIENT_BALANCE`
 
 ---
 
-## 5. Congestion Fee (Taxa de Congestionamento)
+## 5. Congestionamento (Sem Token)
 
-A **congestion fee** é uma taxa adicional **exclusiva da Plataforma**.
+O congestionamento **não utiliza POE**.
 
 ### Normativo
 
-- congestion fee **não altera ordem**
-- congestion fee **não compra prioridade**
-- congestion fee vai **100% para a Plataforma**
+- congestionamento **não altera ordem**
+- congestionamento **não compra prioridade**
+- congestionamento **não consome nem distribui POE**
+
+Mecanismos de rate limit, fila cheia ou cobrança adicional  
+ocorrem **fora do protocolo PoE**, como política operacional da Plataforma.
 
 ---
 
-## 5.1 Cálculo
+## 6. Limites Técnicos (Hard Limits)
 
-A implementação pode usar função baseada em `queue_size`, desde que:
-
-- `queue_size` seja o número de submissões pendentes no FIFO no instante da recepção;
-- o cálculo seja determinístico e auditável.
-
----
-
-## 5.2 Liquidação com congestion fee
-
-`TOTAL_FEE = TOTAL_FEE_BASE + CONGESTION_FEE`
-
-Repasse:
-
-- `platform_id += 1 POE + CONGESTION_FEE`
-- `storer_id += 1 POE`
-
----
-
-## 6. Limites de Payload (Hard Limits)
-
-Mesmo pagando, existem limites técnicos:
+Mesmo pagando, existem limites rígidos para evitar abuso:
 
 - `MAX_EVENT_JSON_BYTES = 8.192` (8 KiB)
 - `MAX_BLOB_BYTES = 5.242.880` (5 MiB)
 
-Acima disso:
+Acima desses limites:
 
 - `ERR_PAYLOAD_TOO_LARGE`
 
@@ -151,18 +139,17 @@ Acima disso:
 
 ## 7. Auditoria Pública (Obrigatória)
 
-A Plataforma **DEVE** publicar relatório auditável contendo:
+A Plataforma **DEVE** publicar relatório auditável periódico contendo:
 
 - número de eventos aceitos
-- total debitado
-- total creditado para:
-  - Plataforma
-  - Armazenadores
-- hash SHA-256 do relatório
+- total de POE debitado
+- total de POE creditado aos armazenadores
+- hash `SHA-256` do relatório
 
 ### Normativo
 
-O hash do relatório **DEVE** ser registrado como evento no PoE *(payload_hash do relatório)*.
+O hash do relatório **DEVE** ser registrado como evento no PoE  
+(`payload_hash` do relatório).
 
 ---
 
@@ -170,15 +157,16 @@ O hash do relatório **DEVE** ser registrado como evento no PoE *(payload_hash d
 
 Em v0.1:
 
-- `FEE_PLATFORM = 1 POE`
 - `FEE_STORER = 1 POE`
-- congestion fee **não compra prioridade**
-- congestion fee é **100% Plataforma**
+- somente armazenadores recebem POE
+- não existe remuneração on-chain para Plataforma ou verificadores
 
 Qualquer mudança:
 
 - exige versionamento (**v0.2+**)
 - exige registro do hash do novo arquivo de parâmetros no PoE
+
+Mudanças silenciosas são **proibidas**.
 
 ---
 
@@ -194,18 +182,19 @@ Qualquer mudança:
 
 ## 10. Avisos (Sem Promessa)
 
-O token **POE**:
+O token POE:
 
 - não garante valorização
 - não é governança
 - não é dividendo
 - não opera exchange
+- não representa participação societária
 
 ---
 
 ## 11. Separação entre Pagamento e Consumo
 
-O POE é exclusivamente uma unidade técnica de consumo do protocolo.
+O POE é exclusivamente uma **unidade técnica de consumo do protocolo**.
 
 Pagamentos pelo uso do PoE:
 
@@ -216,8 +205,9 @@ Pagamentos pelo uso do PoE:
 
 A Plataforma:
 
-- converte pagamento externo em consumo de POE
+- converte pagamentos externos em consumo de POE
 - assume risco operacional e cambial
+- não recebe tokens on-chain por padrão
 
 ---
 
@@ -225,14 +215,16 @@ A Plataforma:
 
 Em v0.1:
 
-- quem usa, paga **2 POE** (+ congestion fee se houver)
-- quem trabalha, recebe automaticamente (Plataforma e Armazenador)
-- congestionamento protege a infraestrutura
-- o PoE permanece minimalista: testemunha e registra
+- quem usa, paga **1 POE** por evento
+- quem mantém o ledger, recebe automaticamente
+- o token remunera trabalho real
+- o PoE permanece minimalista: ordena e testemunha
 
 **Quem usa, paga.**  
-**Quem trabalha, recebe.**  
-**Congestionamento protege a infraestrutura — não compra prioridade.**
+**Quem mantém o ledger, recebe.**  
+**Sem governança, sem promessa, sem privilégio.**
+
+
 
 
 
