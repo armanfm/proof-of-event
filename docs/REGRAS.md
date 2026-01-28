@@ -7,28 +7,40 @@ O Proof of Event é uma **infraestrutura técnica neutra**, não um prestador de
 ## 2. Papéis e Responsabilidades (Normativo)
 
 ### 2.1 Cliente Final (Consumidor de Prova)
-- **Responsabilidade:** Escolher e contratar um Armazenador/Verificador idôneo.
-- **Direitos:** Receber prova criptográfica do registro.
-- **Limites:** Não exige conhecimento técnico do PoE.
+- **Responsabilidade:** escolher e contratar um **Operador** idôneo (verificador e/ou armazenador).
+- **Direitos:** receber prova criptográfica do registro.
+- **Limites:** não precisa compreender o funcionamento interno do PoE para verificar a prova.
 
-### 2.2 Armazenador/Verificador (Agente de Confiança)
-- **Responsabilidade PRIMÁRIA por:**
-  - Validação semântica do evento (off-chain)
-  - Escolha de algoritmos criptográficos (clássicos ou PQC)
-  - Custódia de documentos/blobs originais
-  - Conformidade legal e regulatória
-  - Relacionamento contratual com o cliente
-  - Resposta técnica e jurídica em caso de disputa
+### 2.2 Verificador / Oráculo (Produtor do Evento)
+- **Responsabilidade primária por:**  
+  - validação semântica do evento (**off-chain**);  
+  - geração de `payload_hash` e metadados do evento;  
+  - escolha de algoritmos criptográficos usados fora do ledger (clássicos ou PQC);  
+  - conformidade legal do procedimento e do conteúdo validado (quando aplicável);  
+  - relacionamento contratual com o Cliente Final (se houver).
+- **Direitos:** cobrar por serviço de verificação **fora do PoE**.
+- **Normativo:** o Verificador **não recebe POE on-chain** pelo protocolo.
 
-- **Direitos:** Operar nodes PoE, cobrar por serviços de verificação.
-- **Obrigações:** Manter infraestrutura, emitir `Commitment_Proof`.
+### 2.3 Armazenador (Storage Node / Replicador do Ledger)
+- **Responsabilidade primária por:**  
+  - manter infraestrutura de replicação do ledger;  
+  - executar append do ledger conforme ordem canônica;  
+  - emitir `Commitment_Proof` (quando aplicável).
+- **Direitos:** receber remuneração **exclusivamente** pelo trabalho de armazenamento, conforme TOKENOMICS v0.1.
+- **Observação:** custódia de blobs/dados originais é **opcional e contratual**, não inerente ao PoE.
 
-### 2.3 Plataforma PoE (Infraestrutura Técnica)
-- **Responsabilidade TÉCNICA por:**
-  - Manter FIFO soberano e ordenado
-  - Preservar ledger imutável (append-only)
-  - Garantir reexecução determinística
-  - Emitir hashes criptográficos verificáveis
+### 2.4 Plataforma PoE (Infraestrutura Técnica)
+- **Responsabilidade técnica por:**  
+  - manter o FIFO soberano e ordenado;  
+  - preservar o ledger append-only;  
+  - garantir reexecução determinística do encadeamento e regras do protocolo.
+- **Não assume responsabilidade por:**  
+  - veracidade, significado, legalidade ou utilidade do conteúdo;  
+  - custódia de dados originais;  
+  - seleção de criptografia usada fora do ledger;  
+  - continuidade operacional de operadores específicos.
+- **Normativo:** a Plataforma **não recebe POE on-chain** por padrão.
+
 
 - **Responsabilidade NÃO assume:**
   - Validação de conteúdo ou significado
