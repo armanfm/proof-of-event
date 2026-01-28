@@ -206,3 +206,14 @@ independentemente da permanência de prestadores específicos.
   - continuidade operacional de operadores específicos.
 - **Normativo:** a Plataforma **não recebe POE on-chain** por padrão.
 
+- ### Política de Armazenadores (v0.1)
+
+- O número de Armazenadores PoE é ilimitado.
+- Não existem requisitos de permissão, stake ou autorização prévia em v0.1.
+- A elegibilidade para remuneração depende exclusivamente de:
+  - disponibilidade no momento da vez;
+  - execução correta do append do ledger;
+  - manutenção do ledger completo e válido.
+- Critérios adicionais de elegibilidade podem ser introduzidos apenas via versionamento futuro (v0.2+), com registro público no PoE.
+
+
