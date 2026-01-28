@@ -156,6 +156,24 @@ Em v0.1:
 - congestionamento protege infraestrutura e **não compra prioridade**
 - o PoE continua minimalista: **testemunha e registra**
 
+---
+
+## 12. Separação entre Pagamento e Consumo de Token
+
+O token POE é exclusivamente uma **unidade técnica de consumo do protocolo**.
+
+Pagamentos pelo uso do serviço PoE **ocorrem fora do protocolo**, podendo ser realizados
+em **fiat ou criptoativos**, a critério da Plataforma.
+
+O pagamento:
+- não cria tokens;
+- não concede direitos on-chain;
+- não implica participação, governança ou expectativa de retorno.
+
+A Plataforma é responsável por converter pagamentos externos em consumo de POE
+para operar o FIFO, assumindo integralmente o risco operacional e cambial.
+
+
 
 **Quem usa, paga.**  
 **Quem trabalha, recebe.**  
