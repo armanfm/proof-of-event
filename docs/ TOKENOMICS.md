@@ -4,7 +4,7 @@ Implementação Econômica Normativa (Off-chain) com Congestion Fee
 **Versão:** 0.1  
 **Status:** Normativo (regras mecânicas executáveis)  
 **Compatível com:** `SPEC.md` v0.1 + `protocol/v0.1.md`  
-**Autor:** Armando José Freire de Melo  
+**Autor:** Armando Freire 
 **Licença:** Apache 2.0  
 
 ---
