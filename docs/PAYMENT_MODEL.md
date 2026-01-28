@@ -80,3 +80,19 @@ Clients are not required to hold, manage, or transfer POE tokens.
 ## 6. Versioning
 
 Changes to this model require explicit versioning (v0.2+).
+
+
+# PAYMENT — Modelos de Pagamento (Informativo)
+
+O protocolo Proof of Event (PoE) não processa pagamentos.
+
+Pagamentos pelo uso do serviço PoE são realizados **fora do protocolo**,
+podendo ocorrer em:
+- moeda fiduciária (fiat);
+- criptoativos.
+
+O pagamento autoriza apenas a **submissão de eventos** no FIFO via Plataforma.
+Clientes finais não interagem com tokens POE.
+
+O token POE é utilizado exclusivamente como unidade técnica interna de consumo
+do protocolo.
