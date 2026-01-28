@@ -1,5 +1,5 @@
 # TOKENOMICS v0.1 — Proof of Event (PoE)
-Implementação Econômica Normativa (Off-chain) com Congestion Fee
+Implementação Econômica Normativa (Contabilidade Interna) + Congestion Fee
 
 **Versão:** 0.1  
 **Status:** Normativo (regras mecânicas executáveis)  
@@ -9,31 +9,11 @@ Implementação Econômica Normativa (Off-chain) com Congestion Fee
 
 ---
 
-## 0. Escopo e Separação de Responsabilidades
+## 0. Princípio
+O PoE **não decide conteúdo** e **não interpreta eventos**.  
+O PoE **testemunha**: ordem FIFO + ledger append-only.
 
-Este documento define parâmetros numéricos e regras mecânicas para:
-- cobrança de taxas (fees) para submissão no FIFO;
-- queima (burn) obrigatória;
-- redistribuição operacional;
-- taxa adicional de congestionamento destinada exclusivamente à Plataforma;
-- regras de medição para pagamentos por trabalho (epochs e units).
-
-### 0.1 O que é PoE Core (Camada 2)
-O **PoE Core** (FIFO + ledger append-only) tem responsabilidade mínima:
-- exigir **formato** + **encadeamento** (`previous_event_hash`) + **ordem FIFO**;
-- registrar e distribuir eventos em ordem;
-- armazenadores replicam e mantêm o ledger.
-
-O PoE Core **não executa** burn, redistribuição, payout, exchange ou preço.
-
-### 0.2 O que é a Camada Econômica (Off-chain)
-A camada econômica off-chain (implementação/serviço externo) é quem:
-- verifica saldo e prova de pagamento para entrada no FIFO;
-- executa burn;
-- calcula pools e payouts por epoch;
-- publica relatórios auditáveis e registra o hash do relatório no PoE.
-
-> O token não promete lucro, não define preço e não opera exchange.
+A economia do PoE é **contabilidade interna determinística**: cobrança e distribuição de POE obedecem regras fixas e auditáveis.
 
 ---
 
@@ -41,267 +21,141 @@ A camada econômica off-chain (implementação/serviço externo) é quem:
 - **Nome:** Token PoE  
 - **Símbolo:** `POE`  
 - **Decimais:** `18`  
-- **Tipo:** criptomoeda / ativo digital de liquidação operacional  
 - **Governança:** nenhuma  
 
 ---
 
 ## 2. Oferta (Supply)
+- **Supply total (genesis):** `1.000.000.000.000 POE`  
+- **Mint adicional:** proibido em v0.1  
 
-### 2.1 Supply Total (Fixado no Genesis)
-- **Supply total:** `1.000.000.000.000 POE`  
-- Criado **uma única vez** no genesis.  
-- **Nenhum mint adicional** é permitido em v0.1.  
-
-### 2.2 Queima Reduz Supply
-- Burn é destruição irreversível de tokens (supply diminui).  
-- Não existe “nascer mais token” após queima.
+> Em v0.1, a emissão é “fechada”: não existe criação infinita por evento.
 
 ---
 
-## 3. Alocação Genesis (Distribuição Inicial)
+## 3. Identidades Mecânicas (Sem Identidade Civil)
+Para distribuição automática:
+- **verifier_id:** `bytes32` (ex.: hash da chave/identidade do verificador) — em v0.1, é o `source_id` do evento.
+- **storer_id:** `bytes32` (hash da identidade do nó armazenador) — em v0.1, é o ID do nó que realizou o append do ledger.
+- **payer_id:** `bytes32` (quem paga para submeter; pode ser o próprio verificador ou um cliente).
 
-Buckets fixos (percentual do supply inicial):
-1. **STORER_FOUNDERS:** `50%` = `500.000.000.000 POE`  
-2. **PLATFORM_RESERVE:** `30%` = `300.000.000.000 POE`  
-3. **VERIFIER_FOUNDERS:** `20%` = `200.000.000.000 POE`  
-
-### 3.1 Vesting (v0.1)
-- **STORER_FOUNDERS (500B):** 25% no genesis + 75% linear em 12 meses (diário)  
-- **VERIFIER_FOUNDERS (200B):** 25% no genesis + 75% linear em 12 meses (diário)  
-- **PLATFORM_RESERVE (300B):** 40% no genesis + 60% linear em 36 meses (diário)
-
-**Regra:** tokens travados **não contam** como disponíveis para pagamentos até liberados.
+> Isso é ID mecânico para contabilidade, não “identidade civil”.
 
 ---
 
-## 4. Identidades de Trabalho (Sem Governança)
+## 4. Regra Central — Cobrança e Distribuição por Evento
+Em v0.1, **cada evento aceito no FIFO** executa **uma liquidação determinística**:
 
-A redistribuição exige identificar “quem trabalhou”.
+### 4.1 Taxas fixas por evento aceito
+- **FEE_PLATFORM = 1 POE**
+- **FEE_STORER   = 1 POE**
+- **FEE_VERIFIER = 1 POE**
 
-Em v0.1:
-- **verifier_id:** `bytes32` (hash de chave pública/identidade do verificador)  
-- **storer_id:** `bytes32` (hash de chave pública/identidade do armazenador)
+Logo:
 
-Uso:
-- `verifier_id` aparece no evento (ex.: `source_id`)  
-- `storer_id` aparece na `Commitment_Proof`
+`TOTAL_FEE_BASE = 3 POE`
 
-> Isso não é “identidade civil”. É apenas ID mecânico de remuneração.
+### 4.2 Momento exato da liquidação
+A liquidação **só acontece** quando:
+1) o evento foi **aceito** (passou em formato + prev_hash + FIFO), e  
+2) o evento foi **gravado no ledger** (append confirmado no nó).
+
+Se falhar antes disso, **não existe débito nem crédito**.
+
+### 4.3 Transferências determinísticas (contabilidade interna)
+Ao aceitar e gravar um evento:
+- debitar `payer_id` em `TOTAL_FEE_BASE` (mais congestion fee se aplicável)
+- creditar:
+  - `platform_id` com `1 POE`
+  - `storer_id` com `1 POE`
+  - `verifier_id` com `1 POE`
+
+**Normativo:** se `payer_id` não tiver saldo suficiente, a submissão **DEVE** ser recusada antes do append, com `ERR_INSUFFICIENT_BALANCE`.
 
 ---
 
-## 5. Estrutura de Taxas (Fee Model)
+## 5. Congestion Fee (Taxa de Congestionamento)
+A congestion fee é uma taxa adicional **exclusiva da Plataforma**, aplicada quando a fila está congestionada.
 
-A taxa total para entrada no FIFO:
-1. Base Fee (registro no FIFO)  
-2. Blob Fee (peso físico por bytes, se houver blob)  
-3. Retention Fee (multiplicador por tempo de retenção do blob)  
-4. Congestion Fee (pico de demanda / fila cheia)
-
-### 5.1 Unidades
-- Todas as taxas são cobradas em **POE** (`10^-18 POE`).  
-- Arredondamento: **sempre para cima** (ceil) na unidade mínima.
-
----
-
-## 6. Parâmetros Numéricos Fixos (v0.1)
-
-### 6.1 Base Fee
-- **BASE_FEE:** `0,10 POE` por evento aceito no FIFO.
-
-### 6.2 Blob Fee (por tamanho)
-- **BLOB_FEE_PER_KIB:** `0,002 POE` por `1 KiB` (1024 bytes)
-- `blob_kib = ceil(blob_bytes / 1024)`
-- `blob_fee = blob_kib * 0,002 POE`
-
-### 6.3 Retention Fee (multiplicador)
-- `RETENTION_30D_MULT = 1x`
-- `RETENTION_365D_MULT = 2x`
-- `RETENTION_PERMANENT_MULT = 6x`
-
-`retained_blob_fee = blob_fee * retention_multiplier`
-
-### 6.4 Hard Limits (mesmo pagando)
-- `MAX_BLOB_BYTES = 5.242.880` (5 MiB)
-- `MAX_EVENT_JSON_BYTES = 8.192` (8 KiB)
-
-Acima disso: rejeitar com **`ERR_PAYLOAD_TOO_LARGE`**.
-
-> Normativo: adicione `ERR_PAYLOAD_TOO_LARGE` na lista de erros do `protocol/v0.1.md`.
-
-### 6.5 Congestion Fee (Taxa de Congestionamento)
-
-Parâmetros:
-- `Q0 = 100`
-- `QMAX = 10.000`
-- `CONGESTION_CAP_MULT = 20x`
-
-**Definição normativa de `queue_size`:**  
-`queue_size` é o número de submissões **pendentes de aceitação** no FIFO no instante em que a submissão é recebida (backlog atual da fila do gateway).
-
-Regra:
-- Se `queue_size <= Q0` ⇒ `congestion_fee = 0`
-- Se `queue_size > Q0` ⇒
-
-
-q = min(queue_size, QMAX)
-mult = ceil_div((q - Q0), Q0)      // 1x, 2x, 3x...
-mult = min(mult, CONGESTION_CAP_MULT)
-congestion_fee = BASE_FEE * mult
-
-## Normativo (Congestion Fee)
-
+**Normativo:**
 - A congestion fee **não altera ordem**.
 - A congestion fee **não compra prioridade**.
 - A congestion fee **vai 100% para a Plataforma**.
 
----
+### 5.1 Cálculo (mecânico)
+A implementação pode usar uma função baseada em `queue_size` (backlog pendente), respeitando:
+- `queue_size` é o número de submissões **pendentes de aceitação** no FIFO no instante de recebimento.
+- o valor final deve ser determinístico e auditável.
 
-## 7. Taxa Total a Pagar (Entrada no FIFO)
+### 5.2 Liquidação com congestion fee
+`TOTAL_FEE = TOTAL_FEE_BASE + CONGESTION_FEE`
 
-Defina:
-
-- `protocol_fee = BASE_FEE + retained_blob_fee`
-- `total_fee = protocol_fee + congestion_fee`
-
-A camada econômica **DEVE** recusar a submissão se não houver saldo/prova para `total_fee`.
-
-O mecanismo de pagamento é **off-chain**. O FIFO só recebe “prova/ok” da camada econômica conforme implantação.
-
----
-
-## 8. Liquidação Econômica (Burn + Redistribuição) — Off-chain
-
-### 8.1 Separação Obrigatória
-
-A liquidação separa a taxa em duas partes:
-
-- **Protocol Fee** (`protocol_fee`)
-- **Congestion Fee** (`congestion_fee`)
-
-Burn e redistribuição aplicam somente sobre `protocol_fee`.  
-`congestion_fee` vai integralmente para Plataforma.
-
-### 8.2 Burn
-
-- `BURN_RATE = 10%` sobre `protocol_fee`
-- `burn_amount = protocol_fee * 0,10`
-- `distributable = protocol_fee - burn_amount`
-
-Burn é obrigatório/irrevogável na camada econômica.
-
-### 8.3 Redistribuição (sobre `distributable`)
-
-- **STORERS:** `40%`
-- **VERIFIERS:** `30%`
-- **PLATFORM:** `20%`
-
-Cálculo:
-
-- `to_storers   = distributable * 0,40`
-- `to_verifiers = distributable * 0,30`
-- `to_platform  = distributable * 0,20`
-- `to_platform += congestion_fee`
+E o repasse fica:
+- `platform_id += 1 POE + CONGESTION_FEE`
+- `storer_id   += 1 POE`
+- `verifier_id += 1 POE`
 
 ---
 
-## 9. Medição de Trabalho (Pagamentos por Epoch)
+## 6. Limites de Payload (Hard Limits)
+Mesmo pagando, existem limites para evitar abuso:
 
-Pagamentos ocorrem por **epochs** para reduzir custo operacional.
+- `MAX_EVENT_JSON_BYTES = 8.192` (8 KiB)
+- `MAX_BLOB_BYTES = 5.242.880` (5 MiB), se houver blob
 
-### 9.1 Epoch
-
-- `EPOCH_LENGTH = 24h`
-- Fuso: `UTC`
-- `epoch_id = YYYY-MM-DD (UTC)`
-
-### 9.2 Unidades — Verificadores
-
-Cada evento aceito no FIFO conta **1 unidade** para o `verifier_id` do evento.
-
-### 9.3 Unidades — Armazenadores
-
-Um armazenador ganha unidade quando:
-
-1. recebeu o evento do FIFO (sequência canônica),
-2. realizou append no ledger local,
-3. emitiu `Commitment_Proof` válida.
-
-`Commitment_Proof` é opcional no PoE Core, mas obrigatória para remuneração nesta tokenomics v0.1.
-
-### 9.4 Elegibilidade — Retenção Completa
-
-Para receber pagamento como armazenador, o nó deve:
-
-- manter ledger completo desde GENESIS até head (segmentado por dia, contínuo);
-- estar sincronizado no hash canônico do ledger.
+Acima disso: rejeitar com **`ERR_PAYLOAD_TOO_LARGE`**.
 
 ---
 
-## 10. Pools e Payouts por Epoch
-
-Para cada epoch:
-
-- `pool_storers(epoch)` = soma de `to_storers`
-- `pool_verifiers(epoch)` = soma de `to_verifiers`
-- `pool_platform(epoch)` = soma de `to_platform` + todas as `congestion_fee`
-
-### 10.1 Payout Pro-rata
-
-- `payout(storer_id) = pool_storers * units(storer_id) / total_units_storers`
-- `payout(verifier_id) = pool_verifiers * units(verifier_id) / total_units_verifiers`
-
-Plataforma recebe `pool_platform` integral.
-
-### 10.2 Auditoria Pública (Normativo)
-
-Ao fechar o epoch, a Plataforma deve publicar relatório auditável contendo:
-
-- `epoch_id`, `total_events`, `burn_total`
-- `pool_storers`, `pool_verifiers`, `pool_platform`
-- lista `(id, units, payout)` para storers e verifiers
+## 7. Auditoria Pública (Obrigatória)
+A Plataforma **DEVE** publicar relatório auditável periódico contendo:
+- número de eventos aceitos no período
+- total debitado
+- total creditado para `platform_id`, `storers`, `verifiers`
+- saldo agregado por classe (pode ser por ID se você quiser transparência total)
 - hash `SHA-256` do relatório
 
-O hash do relatório **DEVE** ser registrado como evento no PoE (`payload_hash` do relatório).
+**Normativo:** o hash do relatório **DEVE** ser registrado como evento no PoE (`payload_hash` do relatório).
 
 ---
 
-## 11. Proibição de Política Monetária Ajustável (v0.1)
-
+## 8. Parâmetros e Mudanças de Regra
 Em v0.1:
+- `FEE_PLATFORM = 1 POE`
+- `FEE_STORER   = 1 POE`
+- `FEE_VERIFIER = 1 POE`
+- congestion fee não compra prioridade e é 100% plataforma
 
-- supply fixo
-- burn rate fixo
-- splits fixos
-- `BASE_FEE` e parâmetros fixos
-
-Mudanças só via versionamento (`v0.2+`), com migração explícita.
+**Normativo (anti-mudança silenciosa):**
+- Se qualquer parâmetro econômico mudar, isso **exige versionamento** (`v0.2+`), e a Plataforma **DEVE** registrar no PoE o hash do arquivo de parâmetros ativo.
 
 ---
 
-## 12. Riscos e Avisos (Sem Promessa)
+## 9. Erros mínimos (consistência com protocol)
+- `ERR_BAD_FORMAT`
+- `ERR_BAD_PREV_HASH`
+- `ERR_PAYLOAD_TOO_LARGE`
+- `ERR_INSUFFICIENT_BALANCE`
+- `ERR_INTERNAL`
 
+---
+
+## 10. Avisos (Sem promessa)
 O token:
-
 - não garante valorização, retorno, liquidez
 - não é governança
-- não é dividendos
-
-O cliente final paga em fiat fora do protocolo; operadores compram `POE` no mercado para usar o FIFO.
+- não é dividendo
+- não opera exchange
 
 ---
 
-## 13. Encerramento
+## 11. Encerramento
+Em v0.1:
+- quem usa, paga `3 POE (+ congestion fee se houver)`
+- quem trabalha, recebe automaticamente (plataforma, armazenador, verificador)
+- congestionamento protege infraestrutura e **não compra prioridade**
+- o PoE continua minimalista: **testemunha e registra**
 
-Este modelo econômico v0.1 é desenhado para:
-
-- tornar spam caro;
-- impedir DoS por payload gigante (fees + limites);
-- reduzir supply com uso (burn);
-- remunerar trabalho real (storers e verifiers);
-- proteger infraestrutura em picos (congestion fee 100% plataforma);
-- manter previsibilidade (parâmetros fixos em v0.1).
 
 **Quem usa, paga.**  
 **Quem trabalha, recebe.**  
