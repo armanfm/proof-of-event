@@ -148,7 +148,7 @@ Regra:
 - Se `queue_size <= Q0` ⇒ `congestion_fee = 0`
 - Se `queue_size > Q0` ⇒
 
-```text
+
 q = min(queue_size, QMAX)
 mult = ceil_div((q - Q0), Q0)      // 1x, 2x, 3x...
 mult = min(mult, CONGESTION_CAP_MULT)
