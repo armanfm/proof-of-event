@@ -169,4 +169,40 @@ imutável continuará disponível, auditável e reexecutável,
 independentemente da permanência de prestadores específicos.
 
 
+## 2. Papéis e Responsabilidades (Normativo)
+
+### 2.1 Cliente Final (Consumidor de Prova)
+- **Responsabilidade:** escolher e contratar um **Operador** idôneo (verificador e/ou armazenador).
+- **Direitos:** receber prova criptográfica do registro.
+- **Limites:** não precisa compreender o funcionamento interno do PoE para verificar a prova.
+
+### 2.2 Verificador / Oráculo (Produtor do Evento)
+- **Responsabilidade primária por:**  
+  - validação semântica do evento (**off-chain**);  
+  - geração de `payload_hash` e metadados do evento;  
+  - escolha de algoritmos criptográficos usados fora do ledger (clássicos ou PQC);  
+  - conformidade legal do procedimento e do conteúdo validado (quando aplicável);  
+  - relacionamento contratual com o Cliente Final (se houver).
+- **Direitos:** cobrar por serviço de verificação **fora do PoE**.
+- **Normativo:** o Verificador **não recebe POE on-chain** pelo protocolo.
+
+### 2.3 Armazenador (Storage Node / Replicador do Ledger)
+- **Responsabilidade primária por:**  
+  - manter infraestrutura de replicação do ledger;  
+  - executar append do ledger conforme ordem canônica;  
+  - emitir `Commitment_Proof` (quando aplicável).
+- **Direitos:** receber remuneração **exclusivamente** pelo trabalho de armazenamento, conforme TOKENOMICS v0.1.
+- **Observação:** custódia de blobs/dados originais é **opcional e contratual**, não inerente ao PoE.
+
+### 2.4 Plataforma PoE (Infraestrutura Técnica)
+- **Responsabilidade técnica por:**  
+  - manter o FIFO soberano e ordenado;  
+  - preservar o ledger append-only;  
+  - garantir reexecução determinística do encadeamento e regras do protocolo.
+- **Não assume responsabilidade por:**  
+  - veracidade, significado, legalidade ou utilidade do conteúdo;  
+  - custódia de dados originais;  
+  - seleção de criptografia usada fora do ledger;  
+  - continuidade operacional de operadores específicos.
+- **Normativo:** a Plataforma **não recebe POE on-chain** por padrão.
 
