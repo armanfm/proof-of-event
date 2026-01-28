@@ -64,20 +64,32 @@ A **camada econômica off-chain** (implementação/serviço externo) é quem:
 
 Buckets fixos (percentual do supply inicial):
 
+## 2. Oferta (Supply)
+
+### 2.1 Supply Total (Fixado no Genesis)
+- **Supply total:** `1.000.000.000.000 POE`
+- Criado **uma única vez** no genesis.
+- **Nenhum mint adicional** é permitido em v0.1.
+
+---
+
 ## 3. Alocação Genesis (Distribuição Inicial)
 
 Buckets fixos (percentual do supply inicial):
 
-1. **STORER_FOUNDERS:** `50%` = `500.000.000 POE`  
-2. **PLATFORM_RESERVE:** `30%` = `300.000.000 POE`  
-3. **VERIFIER_FOUNDERS:** `20%` = `200.000.000 POE`  
+1. **STORER_FOUNDERS:** `50%` = `500.000.000.000 POE`  
+2. **PLATFORM_RESERVE:** `30%` = `300.000.000.000 POE`  
+3. **VERIFIER_FOUNDERS:** `20%` = `200.000.000.000 POE`
 
 ### 3.1 Vesting (v0.1)
-- **STORER_FOUNDERS (500M):** 25% no genesis + 75% linear em 12 meses (diário)  
-- **VERIFIER_FOUNDERS (200M):** 25% no genesis + 75% linear em 12 meses (diário)  
-- **PLATFORM_RESERVE (300M):** 40% no genesis + 60% linear em 36 meses (diário)  
+- **STORER_FOUNDERS (500B):** 25% no genesis + 75% linear em 12 meses (diário)  
+- **VERIFIER_FOUNDERS (200B):** 25% no genesis + 75% linear em 12 meses (diário)  
+- **PLATFORM_RESERVE (300B):** 40% no genesis + 60% linear em 36 meses (diário)
 
-> Em v0.1 não existe bucket DEV_FUND separado.
+Regra: tokens travados **não contam** como disponíveis para pagamentos até liberados.
+
+> Em v0.1 não existe bucket DEV_FUND separado (se você quiser DEV_FUND, tem que tirar percentual de alguém).
+
 
 
 Regra: tokens travados **não contam** como disponíveis para pagamentos até liberados.
