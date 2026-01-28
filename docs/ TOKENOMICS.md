@@ -64,16 +64,21 @@ A **camada econômica off-chain** (implementação/serviço externo) é quem:
 
 Buckets fixos (percentual do supply inicial):
 
-1. **STORER_FOUNDERS:** `40%` = `400.000.000 POE`  
+## 3. Alocação Genesis (Distribuição Inicial)
+
+Buckets fixos (percentual do supply inicial):
+
+1. **STORER_FOUNDERS:** `50%` = `500.000.000 POE`  
 2. **PLATFORM_RESERVE:** `30%` = `300.000.000 POE`  
 3. **VERIFIER_FOUNDERS:** `20%` = `200.000.000 POE`  
-4. **DEV_FUND:** `10%` = `100.000.000 POE`  
 
 ### 3.1 Vesting (v0.1)
-- **STORER_FOUNDERS (400M):** 25% no genesis + 75% linear em 12 meses (diário)  
+- **STORER_FOUNDERS (500M):** 25% no genesis + 75% linear em 12 meses (diário)  
 - **VERIFIER_FOUNDERS (200M):** 25% no genesis + 75% linear em 12 meses (diário)  
 - **PLATFORM_RESERVE (300M):** 40% no genesis + 60% linear em 36 meses (diário)  
-- **DEV_FUND (100M):** 0% no genesis + 100% linear em 24 meses (diário)
+
+> Em v0.1 não existe bucket DEV_FUND separado.
+
 
 Regra: tokens travados **não contam** como disponíveis para pagamentos até liberados.
 
