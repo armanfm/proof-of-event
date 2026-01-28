@@ -81,6 +81,8 @@ Clients are not required to hold, manage, or transfer POE tokens.
 
 Changes to this model require explicit versioning (v0.2+).
 
+---
+
 
 # PAYMENT — Modelos de Pagamento (Informativo)
 
