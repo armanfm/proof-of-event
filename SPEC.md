@@ -118,6 +118,28 @@ O PoE **não define nem impõe**:
 
 Cada certificador opera de forma **soberana e independente**.
 
+### Certificadores PoE
+
+Certificadores PoE são entidades responsáveis por prestar o serviço de
+certificação temporal de eventos externos.
+
+Eles podem ser instituições, oráculos, empresas, órgãos públicos ou operadores
+autorizados, conforme o contexto de uso. O protocolo PoE não define critérios
+de escolha, reputação ou autoridade dos certificadores — essas relações existem
+fora do sistema.
+
+Cada certificador:
+
+- opera de forma independente;
+- certifica apenas eventos sob sua responsabilidade;
+- responde legal e operacionalmente pelos eventos que aceita;
+- não participa de consenso;
+- não valida ou invalida eventos de outros certificadores.
+
+Múltiplos certificadores existem para refletir a realidade do mundo externo:
+diferentes eventos exigem diferentes entidades responsáveis.
+
+
 ---
 
 ## 5. Prova Canônica PoE
