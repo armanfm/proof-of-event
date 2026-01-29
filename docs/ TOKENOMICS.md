@@ -12,14 +12,20 @@
 
 ## 0. Princípio
 
-O Proof of Event (PoE) não decide conteúdo e não interpreta eventos.  
-O PoE **testemunha**: ordenação FIFO + ledger append-only.
+O Proof of Event (PoE) não decide conteúdo, não interpreta eventos
+e não resolve disputas.
+
+O PoE **testemunha** eventos por meio de:
+- timestamp canônico;
+- prova criptográfica;
+- ledger append-only determinístico.
 
 A economia do PoE é **contabilidade interna determinística**:
 
-- o consumo de POE ocorre **por evento efetivamente registrado**;
-- a distribuição remunera **exclusivamente trabalho real executado**;
-- não existe emissão dinâmica, recompensa especulativa ou governança.
+- o consumo de POE ocorre **exclusivamente por evento registrado**;
+- não existe emissão dinâmica;
+- o token remunera **trabalho real executado**;
+- não há promessa econômica, governança ou privilégio.
 
 ---
 
@@ -28,33 +34,75 @@ A economia do PoE é **contabilidade interna determinística**:
 - **Nome:** Token PoE  
 - **Símbolo:** POE  
 - **Decimais:** 18  
-- **Governança:** nenhuma  
+- **Governança:** inexistente  
 
-O POE é um **token técnico de consumo do protocolo**,  
-**não** é instrumento financeiro, valor mobiliário ou promessa econômica.
+O Token POE é uma **unidade técnica de consumo do protocolo**.
+
+Ele:
+- não representa valor mobiliário;
+- não confere direitos políticos;
+- não promete valorização;
+- não participa da prova criptográfica.
 
 ---
 
-## 2. Oferta (Supply)
+## 2. Oferta (Supply) e Distribuição
 
-- **Supply total (GENESIS):** 1.000.000.000.000 POE  
-- **Mint adicional:** proibido em v0.1  
+### 2.1 Supply Total
 
-Em v0.1 a emissão é **fechada**:
+- **GENESIS:** 1.000.000.000.000 POE criados uma única vez
+- **Emissão adicional:** proibida permanentemente
 
-- não existe criação infinita;
-- não existe mint por evento;
-- o token apenas **circula**.
+Não existe mint por evento, inflação programada ou expansão futura
+em v0.1.
+
+---
+
+### 2.2 Distribuição Inicial
+
+- **Reserva Técnica:** 1.000.000.000.000 POE (100%)
+- Mantida pela Plataforma PoE como **reserva operacional**
+- Utilizada exclusivamente para:
+  - provisionar consumo do protocolo;
+  - viabilizar operação inicial;
+  - garantir disponibilidade de tokens para uso do sistema
+
+Normativo:
+
+A reserva técnica:
+- **não implica governança**;
+- **não garante valorização**;
+- **não confere direitos econômicos** além do consumo do protocolo.
+
+---
+
+### 2.3 Aquisição de Tokens
+
+Clientes podem adquirir POE por:
+
+1. Compra direta da Plataforma (preço fixado em moeda fiduciária por evento)
+2. Mercado secundário (preço livre de mercado)
+3. Acordos privados entre participantes
+
+Normativo:
+
+- Não há airdrop
+- Não há ICO
+- Não há venda pública
+- Não há distribuição gratuita
+
+O Token POE existe exclusivamente para viabilizar
+o uso do protocolo Proof of Event.
 
 ---
 
 ## 3. Identidades Mecânicas (Sem Identidade Civil)
 
-O protocolo utiliza **IDs mecânicos** para contabilidade automática.
+O PoE utiliza identificadores técnicos para contabilidade automática.
 
 ### 3.1 `payer_id` (bytes32)
 
-Identifica quem consome POE para submeter eventos:
+Identifica quem consome POE:
 - cliente institucional;
 - verificador;
 - oráculo;
@@ -64,13 +112,13 @@ Identifica quem consome POE para submeter eventos:
 
 Identifica o Certificador PoE responsável por:
 - gerar timestamp canônico;
-- calcular a prova PoE;
+- calcular a PoE_Proof;
 - realizar o append no ledger.
 
-Esses identificadores:
-- **não representam identidade civil**;
-- **não implicam confiança**;
-- são apenas endereços técnicos para débito e crédito.
+Esses IDs:
+- não representam identidade civil;
+- não implicam confiança;
+- não conferem privilégios.
 
 ---
 
@@ -82,15 +130,16 @@ Esses identificadores:
 
 Normativo:
 
-- Verificadores **NÃO** recebem POE  
-- Plataforma **NÃO** recebe POE on-chain  
-- O POE remunera exclusivamente o **serviço de certificação/registro**
+- Verificadores **NÃO** recebem POE
+- Plataforma **NÃO** recebe POE on-chain
+- O POE remunera exclusivamente o serviço
+  de certificação e registro do evento
 
 ---
 
 ## 5. Timing do Consumo (Normativo)
 
-O consumo ocorre **atomicamente** com o append no ledger determinístico
+O consumo ocorre **atomicamente** com o append no ledger
 do Certificador PoE.
 
 Não existe estado intermediário.
@@ -102,17 +151,19 @@ Não existe estado intermediário.
 
 Não há cobrança parcial, antecipada ou posterior.
 
-### 5.1 Modelo Lógico de Atomicidade
+---
 
-O processo segue o modelo abaixo:
+### 5.1 Modelo Lógico de Atomicidade
 
 1. Início da transação lógica  
 2. Append do evento no ledger append-only  
 3. Débito do saldo correspondente  
 4. Commit da transação  
 
-Se qualquer etapa falhar **antes do commit**, todo o processo é abortado
-e **nenhum consumo ocorre**.
+Se qualquer etapa falhar antes do commit:
+- o append é abortado;
+- nenhum débito ocorre;
+- nenhum POE é consumido.
 
 ---
 
@@ -120,12 +171,12 @@ e **nenhum consumo ocorre**.
 
 ### Exemplos de falha ANTES do registro:
 
-1. ❌ **ERR_BAD_FORMAT**  
-2. ❌ **ERR_BAD_VERSION**  
-3. ❌ **ERR_NO_TOKEN**  
-4. ❌ **ERR_DUPLICATE_EVENT**  
-5. ❌ **ERR_RATE_LIMIT**  
-6. ❌ **ERR_CERTIFIER_OFFLINE**
+1. ❌ ERR_BAD_FORMAT  
+2. ❌ ERR_BAD_VERSION  
+3. ❌ ERR_NO_TOKEN  
+4. ❌ ERR_DUPLICATE_EVENT  
+5. ❌ ERR_RATE_LIMIT  
+6. ❌ ERR_CERTIFIER_OFFLINE  
 
 Nestes casos:
 
@@ -137,15 +188,15 @@ Nestes casos:
 
 ## 7. Registro Considerado Bem-Sucedido
 
-Um registro é considerado **BEM-SUCEDIDO** se, e somente se:
+Um evento é considerado **BEM-SUCEDIDO** quando:
 
 1. ✅ Formato validado  
 2. ✅ Pagamento validado (se aplicável)  
 3. ✅ Timestamp canônico gerado  
-4. ✅ Prova PoE calculada  
+4. ✅ PoE_Proof calculada  
 5. ✅ Append confirmado no ledger  
 
-**Somente após TODOS os passos ocorre consumo.**
+Somente após **TODOS** esses passos ocorre consumo.
 
 ---
 
@@ -155,12 +206,12 @@ O congestionamento **não utiliza POE**.
 
 Normativo:
 
-- congestionamento **não altera ordem**;
-- congestionamento **não compra prioridade**;
-- congestionamento **não consome tokens**.
+- congestionamento não altera ordem;
+- congestionamento não compra prioridade;
+- congestionamento não consome nem distribui POE.
 
 Rate limit, fila cheia ou políticas adicionais
-são **operacionais**, fora do protocolo PoE.
+são **operacionais** e fora do protocolo PoE.
 
 ---
 
@@ -168,12 +219,11 @@ são **operacionais**, fora do protocolo PoE.
 
 Mesmo pagando, existem limites rígidos:
 
-- `MAX_EVENT_JSON_BYTES = 8.192` (8 KiB)  
-- `MAX_BLOB_BYTES = 5.242.880` (5 MiB)  
+- MAX_EVENT_JSON_BYTES = 8.192 (8 KiB)
+- MAX_BLOB_BYTES = 5.242.880 (5 MiB)
 
-Acima disso:
-
-- **ERR_PAYLOAD_TOO_LARGE**
+Acima desses limites:
+- ERR_PAYLOAD_TOO_LARGE
 
 ---
 
@@ -188,7 +238,7 @@ A Plataforma **DEVE** publicar relatório periódico contendo:
 Normativo:
 
 - o hash do relatório **DEVE** ser registrado como evento PoE;
-- auditoria é reexecutável a partir do ledger.
+- auditoria é pública, reexecutável e verificável.
 
 ---
 
@@ -197,14 +247,12 @@ Normativo:
 O POE é exclusivamente uma **unidade técnica de consumo**.
 
 Pagamentos:
-
 - ocorrem fora do protocolo;
 - podem ser feitos em fiat ou cripto;
 - não criam tokens;
 - não concedem direitos on-chain.
 
 A Plataforma:
-
 - converte pagamento externo em consumo interno;
 - assume risco operacional e cambial;
 - não recebe tokens on-chain por padrão.
@@ -213,7 +261,7 @@ A Plataforma:
 
 ## 12. Avisos (Sem Promessas)
 
-O token POE:
+O Token POE:
 
 - não garante valorização;
 - não é governança;
