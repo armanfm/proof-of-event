@@ -4,7 +4,7 @@
 
 - **Versão:** 0.1  
 - **Status:** Fundação Técnica  
-- **Autor:** Armando José Freire de Melo  
+- **Autor:** Armando Freire  
 - **Licença:** Apache License 2.0  
 
 ---
