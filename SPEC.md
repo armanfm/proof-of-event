@@ -92,8 +92,39 @@ O protocolo aplica apenas regras **mecânicas e determinísticas**.
 - **Timestamp Canônico:** Marca temporal gerada pelo Certificador PoE no momento da aceitação.
 - **Prova PoE (PoE_Proof):** Associação criptográfica entre o hash do evento e o timestamp canônico.
 - **Ledger PoE:** Registro append-only das provas temporais emitidas por um Certificador PoE.
-- **Certificador_ID:** Identificador estável e imutável do certificador.
+- **Certificador_ID:** Identificador único, estável e imutável de um Certificador PoE.
 - **Token PoE (Opcional):** Unidade econômica utilizada exclusivamente para liquidação operacional do uso do protocolo.
+
+---
+
+### 3.1 Formato do Certificador_ID
+
+O `certificador_id` **DEVE**:
+- Ser determinístico, único e imutável
+- Ser computável exclusivamente a partir do evento GENESIS
+- Permanecer constante durante toda a existência do certificador
+
+O formato **RECOMENDADO** é:
+
+certificador_id = "poe:" || SHA-512(genesis_serializado)
+
+
+Onde:
+- `genesis_serializado` é a serialização determinística completa do evento GENESIS
+- O hash SHA-512 resulta em **128 caracteres hexadecimais**
+
+Exemplo:
+
+poe:a1b2c3d4e5f6...<128 hex>
+
+
+Outros formatos **SÃO PERMITIDOS**, desde que sejam:
+- determinísticos;
+- imutáveis após a criação;
+- computáveis a partir do GENESIS;
+- únicos sem colisões práticas.
+
+O protocolo PoE **não valida identidade**, apenas registra o identificador declarado.
 
 ---
 
@@ -129,28 +160,6 @@ Cada certificador opera de forma **soberana e independente**.
 
 ---
 
-### 4.3 Certificadores PoE
-
-Certificadores PoE são entidades responsáveis por prestar o serviço de
-certificação temporal de eventos externos.
-
-Eles podem ser instituições, oráculos, empresas, órgãos públicos ou operadores
-autorizados, conforme o contexto de uso.
-
-O protocolo PoE **não define critérios de escolha, reputação ou autoridade**
-dos certificadores — essas relações existem fora do sistema.
-
-Cada certificador:
-- certifica apenas eventos sob sua responsabilidade;
-- responde legal e operacionalmente pelos eventos que aceita;
-- não participa de consenso;
-- não valida ou invalida eventos de outros certificadores.
-
-Múltiplos certificadores existem para refletir a realidade do mundo externo:
-diferentes eventos exigem diferentes entidades responsáveis.
-
----
-
 ## 5. Prova Canônica PoE
 
 ### 5.1 Definição Formal
@@ -159,10 +168,6 @@ A prova PoE é definida exclusivamente por:
 
 PoE_Proof = SHA-512(payload_hash || timestamp_canônico)
 
-
-Onde:
-- `payload_hash` é fornecido externamente;
-- `timestamp_canônico` é atribuído pelo Certificador PoE.
 
 Essa é a **unidade mínima e suficiente de prova**.
 
@@ -174,7 +179,7 @@ A prova PoE é:
 - imutável;
 - verificável independentemente;
 - reexecutável;
-- resistente a interpretação semântica.
+- semanticamente neutra.
 
 ---
 
@@ -188,7 +193,7 @@ A verificação de uma prova PoE consiste em:
 
 PoE_Proof' = SHA-512(payload_hash || timestamp_canônico)
 
-4. Comparar `PoE_Proof'` com a `poe_proof` apresentada
+4. Comparar com a `poe_proof` apresentada
 
 Se os valores coincidirem, a prova é válida.
 
@@ -212,20 +217,19 @@ O `payload_hash` **DEVE**:
 - representar exclusivamente o conteúdo do evento externo.
 
 O protocolo assume a resistência a colisões do algoritmo SHA-512.
-Eventos com `payload_hash` idêntico são tratados como o mesmo evento
-do ponto de vista criptográfico.
+Eventos com `payload_hash` idêntico são tratados como o mesmo evento.
 
 ---
 
 ## 8. Timestamp Canônico
 
 O timestamp canônico **DEVE**:
-- ser gerado por uma fonte de tempo confiável controlada pelo Certificador PoE;
+- ser gerado por fonte de tempo confiável do certificador;
 - ser expresso em UTC;
 - utilizar o formato ISO 8601 estendido:
 `YYYY-MM-DDTHH:MM:SS.sssZ`;
 - possuir precisão mínima de milissegundos;
-- representar o instante de aceitação do evento pelo certificador.
+- representar o instante de aceitação do evento.
 
 ---
 
@@ -233,125 +237,100 @@ O timestamp canônico **DEVE**:
 
 Um evento é aceito pelo PoE se, e somente se:
 - o formato canônico é respeitado;
-- o timestamp canônico é atribuído pelo Certificador PoE;
+- o timestamp canônico é atribuído;
 - requisitos operacionais (ex: pagamento, se aplicável) são atendidos.
 
 Não existe rejeição baseada em conteúdo semântico.
 
 ---
 
-## 10. Eventos Arbitrários e Conteúdo “Errado”
+## 10. Eventos Arbitrários e Correções
 
-O PoE **não diferencia** eventos de produção, teste, erro ou experimento.
+O PoE não diferencia eventos de produção, teste ou erro.
 
-Qualquer evento que:
-- respeite o formato;
-- cumpra as regras mecânicas;
-
-**DEVE** ser aceito pelo certificador.
-
-Correções ou invalidações ocorrem **exclusivamente por novos eventos**,
-preservando a trilha de auditoria.
+Eventos aceitos **NUNCA** são removidos.
+Correções ocorrem apenas por **novos eventos**.
 
 ---
 
 ## 11. Token PoE (Camada Operacional Opcional)
 
-Quando utilizado, o Token PoE pode servir como requisito operacional
-para submissão de eventos.
-
-Nesse caso:
-- o pagamento **DEVE** ser concluído antes da aceitação;
+Quando utilizado:
+- o pagamento **DEVE** ocorrer antes da aceitação;
 - a falha no pagamento **É** motivo válido de rejeição;
-- informações econômicas **PODEM** ser registradas como metadata opcional.
+- dados econômicos **PODEM** constar como metadata.
 
-O token:
-- não é emitido pelo núcleo PoE;
-- não participa da prova criptográfica;
-- não confere governança;
-- não promete retorno financeiro.
+O token não participa da prova criptográfica.
 
 ---
 
 ## 12. GENESIS
 
-O evento GENESIS representa a inicialização de um Certificador PoE.
+O evento GENESIS representa a inicialização do Certificador PoE.
 
 O GENESIS **DEVE**:
-- ser o primeiro registro do ledger do certificador;
-- possuir um `payload_hash` constante
-(ex: SHA-512("POE_GENESIS"));
-- possuir um timestamp canônico correspondente ao início de operação;
-- PODE conter metadata identificando o certificador,
-sua versão inicial e parâmetros operacionais.
+- ser o primeiro registro do ledger;
+- possuir `payload_hash` constante (ex: SHA-512("POE_GENESIS"));
+- possuir timestamp canônico inicial;
+- PODE conter metadata do certificador.
 
-Na versão 0.1 do protocolo, o algoritmo de hash do payload
-é **FIXO em SHA-512**, independentemente de declarações no GENESIS.
+Na versão 0.1, o algoritmo de hash é **FIXO em SHA-512**.
 
 ---
 
 ## 13. Recibo PoE (Opcional)
 
-Um Certificador PoE **PODE** emitir um recibo verificável
-associado a uma prova PoE.
+Um Certificador PoE **PODE** emitir um recibo verificável.
 
-Um recibo PoE **DEVE** conter:
+O recibo **DEVE** conter:
 - `poe_proof`
-- `timestamp_canônico`
 - `payload_hash`
+- `timestamp_canônico`
 - `certificador_id`
 - `version`
 
-Um recibo PoE **PODE** conter:
-- `metadata` (dados auxiliares, fora da prova)
-
 ### 13.1 Assinatura Criptográfica
 
-A assinatura criptográfica de um recibo PoE é **OPCIONAL**
-e externa ao núcleo do protocolo.
+A assinatura é **OPCIONAL**.
 
 Quando presente:
-- o recibo **DEVE** ser assinado utilizando
-um algoritmo de criptografia pós-quântica (PQC);
-- o algoritmo específico é escolha do certificador;
-- a assinatura autentica o certificador,
-**não altera nem integra** a PoE_Proof.
-
-A ausência de assinatura **NÃO invalida** a prova PoE.
+- DEVE usar algoritmo PQC;
+- autentica o certificador;
+- NÃO altera a prova.
 
 ---
 
-## 14. Retenção do Ledger (Normativo)
+### 13.2 Serialização Determinística
 
-Um Certificador PoE **DEVE** manter a integridade completa
-de seu ledger determinístico desde o GENESIS
-até a prova mais recente.
+Objetos que participem de hash ou assinatura **DEVEM** ser serializados
+deterministicamente:
 
-A retenção parcial do histórico **É PROIBIDA**
-dentro de uma mesma instância certificadora.
+- UTF-8
+- Campos ordenados alfabeticamente
+- JSON compacto (sem espaços)
+- Números como inteiros decimais
 
 ---
 
-## 15. Versionamento e Compatibilidade
+## 14. Retenção do Ledger
 
-Mudanças no protocolo:
-- **DEVEM** incrementar a versão;
-- **DEVEM** declarar compatibilidade ou incompatibilidade;
-- **NUNCA** invalidam provas já emitidas.
+Um Certificador PoE **DEVE** manter todo o histórico desde o GENESIS.
 
-Versões são compatíveis quando:
-- mantêm a mesma definição de `PoE_Proof`;
-- não alteram regras de aceitação;
-- não invalidam provas anteriores.
+Retenção parcial é **PROIBIDA**.
 
-Mudanças incompatíveis **EXIGEM**
-novo identificador de protocolo.
+---
+
+## 15. Versionamento
+
+Mudanças:
+- **DEVEM** incrementar versão;
+- **NUNCA** invalidam provas antigas.
 
 ---
 
 ## 16. Encerramento
 
-O Proof of Event existe para registrar eventos como
-**fatos criptográficos**, não como decisões sociais.
+O Proof of Event existe para registrar eventos como **fatos criptográficos**,
+não como decisões sociais.
 
 **A blockchain não decide. Ela testemunha.**
