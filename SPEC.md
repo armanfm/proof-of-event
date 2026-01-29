@@ -1,258 +1,245 @@
 # Proof of Event (PoE)
-## Especificação Técnica Oficial (Camada 2 — Ledger Determinístico)
+## Especificação Técnica Oficial  
+### Camada 2 — Ledger Determinístico
 
-**Versão:** 0.1  
-**Status:** Fundação Técnica  
-**Autor:** Armando José Freire de Melo  
-**Licença:** Apache License 2.0  
+- **Versão:** 0.1  
+- **Status:** Fundação Técnica  
+- **Autor:** Armando José Freire de Melo  
+- **Licença:** Apache License 2.0  
 
 ---
 
 ## 1. Escopo do Protocolo
 
-O Proof of Event (PoE) é um protocolo determinístico para registro de eventos externos, cujo objetivo é produzir uma prova criptográfica **imutável, auditável e reexecutável** de que um evento foi registrado.
+O Proof of Event (PoE) é um protocolo determinístico para registro de eventos externos, cujo objetivo é produzir uma **prova criptográfica imutável, auditável e reexecutável de existência temporal**.
 
-O PoE **não valida significado**, **não decide verdade** e **não resolve disputas**. Ele registra eventos cuja ocorrência e validação **já foram tratadas fora do protocolo** (Camada 1).
+O PoE **não valida significado**, **não decide verdade** e **não resolve disputas**.  
+Ele registra eventos cuja ocorrência e validação **já foram tratadas fora do protocolo** (Camada 1).
 
-Esta especificação define **exclusivamente** a **Camada 2 — Ledger Determinístico PoE**.
+Esta especificação define **exclusivamente a Camada 2 — Ledger Determinístico PoE** e o papel dos **Certificadores PoE**.
 
 ---
 
 ## 2. Princípios Fundamentais
 
-1. **Determinismo Absoluto**  
-   Dada a mesma sequência de entradas válidas (na mesma ordem), qualquer implementação PoE **DEVE** produzir exatamente o mesmo ledger e os mesmos hashes.
+### 2.1 Determinismo Absoluto
 
-2. **Ausência de Consenso**  
-   Não existe votação, mineração, staking, slashing, fork choice, nem resolução de conflitos on-chain.
+Dada a mesma entrada válida, qualquer implementação compatível do PoE **DEVE** produzir exatamente a mesma prova criptográfica.
 
-3. **Ordem Global Única (FIFO Soberano)**  
-   Existe uma única linha do tempo canônica. A ordem dos eventos é determinada exclusivamente pela ordem de submissão ao FIFO global.
+Não existe aleatoriedade, votação ou interpretação subjetiva.
 
-4. **Imutabilidade Append-Only**  
-   Eventos aceitos **NUNCA** são alterados ou removidos.
+---
 
-5. **Neutralidade do Protocolo**  
-   O protocolo é cego a reputação, saldo, status social ou poder econômico. O protocolo aplica regras mecânicas: **formato + pagamento + ordem**.
+### 2.2 Ausência de Consenso
+
+O PoE **não implementa consenso distribuído**.
+
+Não existem:
+- votação
+- mineração
+- staking
+- slashing
+- forks
+- governança on-chain
+
+O protocolo não resolve conflitos sociais, jurídicos ou semânticos.
+
+---
+
+### 2.3 Ancoragem Temporal Canônica
+
+A prova produzida pelo PoE baseia-se **exclusivamente na ancoragem temporal**.
+
+O protocolo atribui um **timestamp canônico**, gerado pelo próprio sistema, no momento da aceitação do evento.
+
+A ordenação entre eventos **não é objetivo do PoE** e **não possui valor probatório**.
+
+---
+
+### 2.4 Imutabilidade Append-Only
+
+Eventos aceitos **NUNCA** são alterados, removidos ou reescritos.
+
+O ledger é estritamente append-only.
+
+---
+
+### 2.5 Neutralidade do Protocolo
+
+O PoE é cego a:
+- identidade social
+- reputação
+- valor econômico
+- conteúdo semântico do evento
+
+O protocolo aplica apenas regras **mecânicas e determinísticas**.
 
 ---
 
 ## 3. Definições
 
 - **Evento Externo (Camada 1):** Fato ocorrido fora do PoE.
-- **Verificador / Oráculo:** Entidade que valida o evento off-chain e prepara a submissão ao PoE.
-- **Evento Canônico:** Representação determinística e estruturada do evento externo.
-- **Ledger PoE:** Registro sequencial e encadeado de eventos aceitos.
-- **FIFO Global:** Porta de entrada soberana que serializa a escrita e define a ordem canônica.
-- **Armazenador (Storage Node):** Nó que replica o ledger PoE e pode emitir provas de armazenamento.
-- **Token PoE:** Criptomoeda nativa usada para pagar o uso do FIFO e redistribuir remuneração operacional.
+- **Certificador PoE:** Entidade que executa o protocolo PoE, recebe eventos validados off-chain e emite provas PoE.
+- **Evento Canônico:** Representação determinística do evento externo.
+- **Timestamp Canônico:** Marca temporal gerada pelo Certificador PoE no momento da aceitação.
+- **Prova PoE:** Associação criptográfica entre o hash do evento e o timestamp canônico.
+- **Ledger PoE:** Registro append-only das provas temporais emitidas por um Certificador PoE.
+- **Token PoE (Opcional):** Unidade econômica utilizada exclusivamente para liquidação operacional do uso do protocolo.
 
 ---
 
 ## 4. Arquitetura do Sistema
 
 ### 4.1 Camada 1 — Evento Externo (Fora do Escopo)
-A validação, auditoria e responsabilidade legal do evento ocorrem **antes** da submissão ao PoE.
 
-O protocolo PoE assume que:
-- houve um processo de verificação off-chain; e
-- o evento foi convertido para um formato canônico.
+A validação, auditoria e responsabilidade legal do evento **ocorrem fora do PoE**.
 
-### 4.2 Camada 2 — Ledger Determinístico PoE (Este Protocolo)
-A Camada 2 é um ledger *append-only* com:
-- **ordem global única por FIFO**, e
-- **encadeamento criptográfico** entre eventos.
-
-Não existem forks. Se um nó diverge, ele está errado e deve sincronizar.
+O protocolo assume que:
+- houve verificação off-chain; e
+- o evento foi reduzido a um hash determinístico.
 
 ---
 
-## 5. Evento Canônico (Formato)
+### 4.2 Camada 2 — Certificador PoE (Este Protocolo)
 
-Todo evento submetido ao PoE **DEVE** seguir um formato rígido e versionado.
+A Camada 2 é executada por um **Certificador PoE**, responsável por:
 
-<img width="472" height="389" alt="image" src="https://github.com/user-attachments/assets/e359b95b-47e8-49d0-bd6c-6b9a3725231a" />
+- receber eventos canônicos;
+- atribuir timestamp canônico;
+- gerar a prova PoE;
+- registrar a prova em um ledger determinístico append-only;
+- emitir recibos verificáveis.
 
-## 5.1 Regras Normativas do Formato
+O PoE **não define nem impõe**:
+- rede distribuída;
+- replicação entre certificadores;
+- consenso entre certificadores;
+- topologia de infraestrutura.
 
-- Todos os campos são obrigatórios.
-- A ordem dos campos é fixa.
-- `previous_event_hash` **DEVE** referenciar o hash do último evento aceito no ledger canônico no momento da submissão ao FIFO.
-- Eventos malformados **DEVEM** ser rejeitados pelo FIFO e **NUNCA** entram no ledger.
-
-## 5.2 Observação sobre `local_timestamp`
-
-- `local_timestamp` é informativo (auditoria/correlação).
-- `local_timestamp` **NÃO** define ordenação.
-- A ordenação é definida **exclusivamente** pelo FIFO global.
-
----
-
-## 6. Ordem Global — FIFO Soberano
-
-### 6.1 Propriedade
-
-- Eventos são processados **exclusivamente** pela ordem de chegada ao FIFO global.
-- Não existe prioridade comprável.
-- Não existe reordenação.
-- Não existe paralelismo lógico de entrada.
-
-### 6.2 Serialização de Escrita
-
-- Participantes submetem eventos ao FIFO.
-- Ninguém “escreve direto” no ledger.
-- O FIFO libera eventos **um por vez**, impondo uma ordem única.
-- Todos os armazenadores ativos recebem a mesma sequência liberada pelo FIFO.
+Cada certificador opera de forma **soberana e independente**.
 
 ---
 
-## 7. Pagamento para Submissão (Uso do FIFO)
+## 5. Prova Canônica PoE
 
-### 7.1 Regra Geral
+### 5.1 Definição Formal
 
-- Para submeter um evento ao FIFO, o verificador/oráculo **DEVE** pagar uma taxa em Token PoE.
-- O pagamento é condição necessária para entrada no FIFO.
-- O FIFO **não cria**, **não emite** e **não destrói** tokens.
-- Pagar o FIFO significa **transferir tokens** para redistribuição operacional.
+A prova PoE é definida exclusivamente por:
 
-### 7.2 Falta de Token
+PoE_Proof = HASH(payload_hash || timestamp_canônico)
 
-Se o verificador não possui token suficiente:
 
-- o evento **NÃO** é aceito no FIFO;
-- não há fila alternativa; e
-- a submissão pode ser reexecutada posteriormente, quando houver token.
+Onde:
+- `payload_hash` é fornecido externamente;
+- `timestamp_canônico` é atribuído pelo Certificador PoE.
+
+Essa é a **unidade mínima e suficiente de prova**.
 
 ---
 
-## 8. Eventos Arbitrários, de Teste e Conteúdo “Errado”
+### 5.2 Propriedades da Prova
 
-O PoE não diferencia eventos de produção, teste, experimento, erro ou conteúdo inválido do ponto de vista semântico.
-
-Qualquer evento que:
-
-- respeite o formato canônico,
-- pague a taxa exigida, e
-- siga a ordem FIFO,
-
-**DEVE** ser aceito pelo ledger, independentemente do valor semântico do `payload_hash`.
-
-O custo de submissão funciona como contenção natural de spam e uso abusivo.
-
-### 8.1 Correção e Invalidação
-
-Eventos aceitos **NUNCA** são removidos. Correções ou invalidações **DEVEM** ocorrer por meio de novos eventos que referenciem o evento anterior (via `event_id` no `payload_hash` ou por payload estruturado), preservando a trilha de auditoria.
+A prova PoE é:
+- imutável;
+- verificável independentemente;
+- reexecutável;
+- resistente a interpretação semântica.
 
 ---
 
-## 9. Replicação e Função dos Armazenadores
+## 6. Formato do Evento Canônico
 
-### 9.1 Comportamento Esperado
+Todo evento submetido ao PoE **DEVE** conter, no mínimo:
 
-Armazenadores:
+- `payload_hash`;
+- metadados de versão (quando aplicável).
 
-- mantêm uma cópia completa e imutável do ledger;
-- aplicam os eventos na ordem do FIFO global;
-- não validam significado;
-- não votam;
-- não criam forks.
-
-### 9.2 Nós Offline
-
-Se um armazenador ficar offline:
-
-- ele simplesmente para de acompanhar o ledger;
-- perde remuneração por eventos que não armazenou; e
-- ao retornar, **DEVE** sincronizar e reexecutar os eventos ausentes em ordem para voltar ao hash canônico.
+Campos adicionais podem existir, desde que **NÃO interfiram** na definição da prova canônica.
 
 ---
 
-## 10. Redistribuição do Token (Liquidação Operacional)
+## 7. Timestamp Canônico
 
-O Token PoE pago pelo uso do FIFO é redistribuído como remuneração operacional:
+- O timestamp canônico é gerado exclusivamente pelo Certificador PoE.
+- Ele é a **única referência temporal válida** da prova.
+- Timestamps externos são apenas informativos.
 
-- **Armazenadores:** armazenamento, replicação e disponibilidade do ledger.
-- **Verificadores/Oráculos:** trabalho off-chain (validação, tokenização, preparação).
-- **Plataforma:** operação do ecossistema, manutenção e infraestrutura.
-
-O token circula. Não há emissão adicional dentro do protocolo.
+O nível de precisão (milissegundos, nanossegundos, etc.) é decisão do certificador, desde que determinística.
 
 ---
 
-## 11. Prova de Compromisso (Opcional)
-
-Ao registrar um evento, um armazenador **PODE** emitir uma prova de compromisso:
-
-<img width="373" height="172" alt="image" src="https://github.com/user-attachments/assets/2f519a54-0edc-4f49-b168-ada8f6d666e2" />
-
-
-Essa prova atesta que um nó específico testemunhou e registrou aquele evento.
-
----
-
-## 12. Condições de Aceitação (Normativo)
+## 8. Aceitação de Eventos (Normativo)
 
 Um evento é aceito pelo PoE se, e somente se:
 
-- segue o formato canônico;
-- referencia corretamente o `previous_event_hash` esperado (conforme estado no FIFO);
-- o pagamento em Token PoE foi efetuado; e
-- respeita a ordem FIFO global.
+- o formato canônico é respeitado;
+- o timestamp canônico é atribuído pelo Certificador PoE;
+- requisitos operacionais (ex: pagamento, se aplicável) são atendidos.
+
+Não existe rejeição baseada em conteúdo semântico.
 
 ---
 
-## 13. O que o Protocolo NÃO Faz
+## 9. Eventos Arbitrários e Conteúdo “Errado”
 
-O PoE:
+O PoE **não diferencia** eventos de produção, teste, erro ou experimento.
 
-- não interpreta eventos;
-- não valida significado;
-- não resolve disputas;
-- não implementa governança;
-- não cria consenso;
-- não garante retorno financeiro, valorização ou rendimento do Token PoE.
+Qualquer evento que:
+- respeite o formato;
+- cumpra as regras mecânicas;
 
----
+**DEVE** ser aceito pelo certificador.
 
-## 14. Considerações de Segurança
-
-- A segurança deriva de reexecução determinística e encadeamento por hash.
-- A confiança é substituída por verificação.
-- Qualquer divergência de hash entre nós indica divergência de estado; o nó divergente deve sincronizar.
+Correções ou invalidações ocorrem **exclusivamente por novos eventos**, preservando a trilha de auditoria.
 
 ---
 
-## 15. Versionamento
+## 10. Token PoE (Camada Operacional Opcional)
+
+O Token PoE pode ser utilizado para:
+- pagamento pelo uso do serviço de certificação;
+- liquidação de custos operacionais.
+
+O token:
+- não é emitido pelo núcleo PoE;
+- não participa da prova criptográfica;
+- não confere governança;
+- não promete retorno financeiro.
+
+---
+
+## 11. Segurança
+
+A segurança do PoE deriva de:
+- determinismo;
+- reexecução independente;
+- imutabilidade do ledger;
+- verificabilidade criptográfica da prova.
+
+Confiança é substituída por verificação.
+
+---
+
+## 12. Versionamento
 
 Mudanças no protocolo:
-
-- **DEVEM** incrementar `version`;
-- **DEVEM** declarar compatibilidade ou quebra de compatibilidade; e
-- **NUNCA** alteram eventos já registrados no ledger.
+- **DEVEM** incrementar a versão;
+- **DEVEM** declarar compatibilidade;
+- **NUNCA** alteram provas já emitidas.
 
 ---
 
-## 16. Encerramento
+## 13. Retenção do Ledger (Normativo)
 
-O Proof of Event existe para registrar eventos como fatos criptográficos, não como decisões sociais.
+Um Certificador PoE **DEVE** manter a integridade completa de seu ledger determinístico desde o GENESIS até a prova mais recente.
+
+A retenção parcial do histórico **é proibida** dentro de uma mesma instância certificadora.
+
+---
+
+## 14. Encerramento
+
+O Proof of Event existe para registrar eventos como **fatos criptográficos**,  
+não como decisões sociais.
 
 **A blockchain não decide. Ela testemunha.**
-
-### Regra de Retenção Completa do Ledger (Normativa)
-
-Um Armazenador PoE DEVE manter uma cópia completa e contínua
-de TODOS os segmentos históricos do ledger determinístico,
-desde o GENESIS até o evento mais recente.
-
-A retenção parcial do ledger é PROIBIDA.
-
-Um nó que:
-- possua apenas parte dos ledgers diários;
-- descarte ledgers históricos;
-- inicie operação sem sincronizar todo o histórico;
-
-É considerado FORA DE SINCRONIA
-e NÃO é um Armazenador PoE válido.
-
-
-
