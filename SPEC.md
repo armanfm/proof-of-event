@@ -186,3 +186,172 @@ A verificação de uma prova PoE consiste em:
 2. Obter o `timestamp_canônico`
 3. Recomputar:
 
+PoE_Proof' = SHA-512(payload_hash || timestamp_canônico)
+
+4. Comparar `PoE_Proof'` com a `poe_proof` apresentada
+
+Se os valores coincidirem, a prova é válida.
+
+---
+
+## 7. Formato do Evento Canônico
+
+Todo evento submetido ao PoE **DEVE** conter, no mínimo:
+
+- `payload_hash`
+
+Campos adicionais podem existir, desde que **NÃO interfiram**
+na definição da prova canônica.
+
+### 7.1 Formato do `payload_hash`
+
+O `payload_hash` **DEVE**:
+- ser gerado utilizando **SHA-512**;
+- ser codificado em **hexadecimal lowercase**;
+- possuir comprimento fixo de **128 caracteres hexadecimais**;
+- representar exclusivamente o conteúdo do evento externo.
+
+O protocolo assume a resistência a colisões do algoritmo SHA-512.
+Eventos com `payload_hash` idêntico são tratados como o mesmo evento
+do ponto de vista criptográfico.
+
+---
+
+## 8. Timestamp Canônico
+
+O timestamp canônico **DEVE**:
+- ser gerado por uma fonte de tempo confiável controlada pelo Certificador PoE;
+- ser expresso em UTC;
+- utilizar o formato ISO 8601 estendido:
+`YYYY-MM-DDTHH:MM:SS.sssZ`;
+- possuir precisão mínima de milissegundos;
+- representar o instante de aceitação do evento pelo certificador.
+
+---
+
+## 9. Aceitação de Eventos (Normativo)
+
+Um evento é aceito pelo PoE se, e somente se:
+- o formato canônico é respeitado;
+- o timestamp canônico é atribuído pelo Certificador PoE;
+- requisitos operacionais (ex: pagamento, se aplicável) são atendidos.
+
+Não existe rejeição baseada em conteúdo semântico.
+
+---
+
+## 10. Eventos Arbitrários e Conteúdo “Errado”
+
+O PoE **não diferencia** eventos de produção, teste, erro ou experimento.
+
+Qualquer evento que:
+- respeite o formato;
+- cumpra as regras mecânicas;
+
+**DEVE** ser aceito pelo certificador.
+
+Correções ou invalidações ocorrem **exclusivamente por novos eventos**,
+preservando a trilha de auditoria.
+
+---
+
+## 11. Token PoE (Camada Operacional Opcional)
+
+Quando utilizado, o Token PoE pode servir como requisito operacional
+para submissão de eventos.
+
+Nesse caso:
+- o pagamento **DEVE** ser concluído antes da aceitação;
+- a falha no pagamento **É** motivo válido de rejeição;
+- informações econômicas **PODEM** ser registradas como metadata opcional.
+
+O token:
+- não é emitido pelo núcleo PoE;
+- não participa da prova criptográfica;
+- não confere governança;
+- não promete retorno financeiro.
+
+---
+
+## 12. GENESIS
+
+O evento GENESIS representa a inicialização de um Certificador PoE.
+
+O GENESIS **DEVE**:
+- ser o primeiro registro do ledger do certificador;
+- possuir um `payload_hash` constante
+(ex: SHA-512("POE_GENESIS"));
+- possuir um timestamp canônico correspondente ao início de operação;
+- PODE conter metadata identificando o certificador,
+sua versão inicial e parâmetros operacionais.
+
+Na versão 0.1 do protocolo, o algoritmo de hash do payload
+é **FIXO em SHA-512**, independentemente de declarações no GENESIS.
+
+---
+
+## 13. Recibo PoE (Opcional)
+
+Um Certificador PoE **PODE** emitir um recibo verificável
+associado a uma prova PoE.
+
+Um recibo PoE **DEVE** conter:
+- `poe_proof`
+- `timestamp_canônico`
+- `payload_hash`
+- `certificador_id`
+- `version`
+
+Um recibo PoE **PODE** conter:
+- `metadata` (dados auxiliares, fora da prova)
+
+### 13.1 Assinatura Criptográfica
+
+A assinatura criptográfica de um recibo PoE é **OPCIONAL**
+e externa ao núcleo do protocolo.
+
+Quando presente:
+- o recibo **DEVE** ser assinado utilizando
+um algoritmo de criptografia pós-quântica (PQC);
+- o algoritmo específico é escolha do certificador;
+- a assinatura autentica o certificador,
+**não altera nem integra** a PoE_Proof.
+
+A ausência de assinatura **NÃO invalida** a prova PoE.
+
+---
+
+## 14. Retenção do Ledger (Normativo)
+
+Um Certificador PoE **DEVE** manter a integridade completa
+de seu ledger determinístico desde o GENESIS
+até a prova mais recente.
+
+A retenção parcial do histórico **É PROIBIDA**
+dentro de uma mesma instância certificadora.
+
+---
+
+## 15. Versionamento e Compatibilidade
+
+Mudanças no protocolo:
+- **DEVEM** incrementar a versão;
+- **DEVEM** declarar compatibilidade ou incompatibilidade;
+- **NUNCA** invalidam provas já emitidas.
+
+Versões são compatíveis quando:
+- mantêm a mesma definição de `PoE_Proof`;
+- não alteram regras de aceitação;
+- não invalidam provas anteriores.
+
+Mudanças incompatíveis **EXIGEM**
+novo identificador de protocolo.
+
+---
+
+## 16. Encerramento
+
+O Proof of Event existe para registrar eventos como
+**fatos criptográficos**, não como decisões sociais.
+
+**A blockchain não decide. Ela testemunha.**
