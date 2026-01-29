@@ -1,116 +1,141 @@
 
-Onde:
+# Proof of Event (PoE)
 
-- `payload_hash` é o hash da informação fornecida externamente
-- `timestamp_canônico` é gerado pelo próprio PoE no momento da aceitação
+**A blockchain não decide. Ela testemunha.**
 
-Qualquer ordenação interna (fila, FIFO, etc.) é **estritamente operacional** e **não possui valor semântico probatório**.
+Proof of Event (PoE) é um protocolo determinístico para registrar eventos externos como **fatos criptográficos ancorados no tempo**, sem consenso, sem votação e sem interpretação semântica on-chain.
+
+PoE **não cria verdade**.  
+PoE **não interpreta significado**.  
+PoE **testemunha eventos cuja validade já existe fora do sistema**.
+
+---
+
+## 🎯 Objetivo do Projeto
+
+O PoE foi projetado para ambientes onde:
+
+- o consenso sobre o evento já existe fora do sistema;
+- auditoria, rastreabilidade e reexecução são mais importantes que governança;
+- mecanismos como PoW, PoS, staking ou votação são indesejáveis;
+- simplicidade, determinismo e compatibilidade institucional são requisitos.
+
+### Exemplos de uso
+
+- registros institucionais
+- eventos legais
+- logs auditáveis
+- sensores e sistemas industriais
+- provas de execução e ocorrência
+
+---
+
+## 🧱 Arquitetura (Visão Geral)
+
+O Proof of Event é dividido em **camadas estritamente desacopladas**:
+
+### Camada 1 — Evento Externo (Fora do Escopo)
+
+Onde o evento ocorre.
+
+- validação
+- auditoria
+- responsabilidade
+- verificação
+
+Tudo acontece **antes** do PoE.
+
+---
+
+### Camada 2 — Certificação Temporal Determinística (PoE)
+
+Executada por **Certificadores PoE**.
+
+O Certificador:
+- recebe o hash do evento;
+- atribui um **timestamp canônico**;
+- gera uma **prova PoE**;
+- registra a prova em um ledger append-only;
+- emite um recibo verificável.
+
+> ⚠️ **Não existe rede PoE**.  
+> Cada certificador opera de forma independente.
 
 ---
 
 ### Camada 3 — Camadas Semânticas (Opcional)
 
-Camadas externas e opcionais que podem:
+Camadas externas podem:
+- interpretar eventos;
+- integrar sistemas;
+- aplicar regras de negócio;
+- enriquecer metadados.
 
-- interpretar eventos
-- enriquecer metadados
-- integrar sistemas institucionais
-- aplicar regras de negócio
-- gerar visualizações ou relatórios
-
-Essas camadas:
-
-- **não interferem** na prova
-- **não alteram** o ledger PoE
-- **não participam** da validade criptográfica
+Essas camadas **NUNCA** interferem na prova PoE.
 
 ---
 
-## 🔐 Prova Criptográfica
+## 🔐 O que é a Prova PoE?
 
-O Proof of Event não tenta responder *o que* um evento significa.  
-Ele responde apenas:
+A prova PoE é definida por:
 
-> **“Esta informação existia a partir deste momento.”**
+PoE_Proof = HASH(payload_hash || timestamp_canônico)
 
-A prova é:
 
-- determinística
-- reexecutável
-- verificável independentemente
-- resistente a interpretação subjetiva
+Ela prova que:
 
-Assinaturas digitais, identidades, certificados ou criptografia pós-quântica **não fazem parte do núcleo probatório**.  
-Quando utilizadas, pertencem a **camadas auxiliares**, fora do hash canônico.
+> “Este evento existia **até** este momento no tempo.”
+
+Nada mais. Nada menos.
+
+---
+
+## 🧠 O que o PoE NÃO é
+
+- não é uma blockchain
+- não é um protocolo de consenso
+- não é uma DAO
+- não é um sistema de governança
+- não é um árbitro de verdade
+- não promete retorno financeiro
+- não recompensa usuários finais
 
 ---
 
 ## 💰 Modelo Econômico (Visão Geral)
 
-O Proof of Event pode operar com uma criptomoeda nativa de infraestrutura, utilizada exclusivamente para:
+O PoE pode operar com uma unidade econômica opcional (Token PoE) para:
 
-- pagamento pelo uso do protocolo
-- liquidação de custos operacionais
-- remuneração de participantes técnicos
+- pagamento pelo uso do serviço de certificação;
+- liquidação de custos operacionais.
 
-### Princípios fundamentais
+Princípios:
 
-- o cliente final paga pelos serviços em moeda fiduciária
-- operadores técnicos utilizam a criptomoeda para acessar o protocolo
-- armazenadores, verificadores e operadores recebem criptomoeda por trabalho executado
-- a criptomoeda **não é criada pelo núcleo PoE**
-- o token apenas circula e é redistribuído
-- não há promessa de retorno financeiro
-- não há governança on-chain
-- o protocolo não incentiva especulação
-
-O modelo econômico é **operacional**, **desacoplado da prova criptográfica** e **não faz parte do núcleo conceitual do PoE**.
-
----
-
-## ❌ O que o PoE NÃO é
-
-- não é um protocolo de consenso
-- não é uma blockchain tradicional
-- não é uma DAO
-- não é um sistema de governança
-- não é um árbitro de verdade
-- não é um sistema de votação
-- não é um mecanismo de recompensa ao usuário final
-- não promete retorno financeiro
-- não cria significado social
+- o token **não faz parte da prova**;
+- o PoE não emite tokens;
+- o preço é definido externamente;
+- não existe promessa de valorização;
+- o token não confere governança.
 
 ---
 
 ## 📜 Especificação Técnica
 
-A definição formal, normativa e técnica do protocolo está em:
+A definição formal, normativa e completa do protocolo está em:
 
-➡️ **`/SPEC.md`**
+➡️ **[`SPEC.md`](./SPEC.md)**
 
-O arquivo `SPEC.md` é a **fonte de verdade técnica** do projeto.
+O SPEC é a **fonte única de verdade técnica**.
 
 ---
 
 ## 🔬 Status do Projeto
 
-- 🧠 Fundação conceitual: **consolidada**
-- 📐 Especificação técnica: **em elaboração**
-- ⚙️ Implementação de referência: **a definir**
-- 💰 Modelo econômico: **definido em nível conceitual**
+- 🧠 Fundação conceitual: consolidada
+- 📐 Especificação técnica: definida (v0.1)
+- ⚙️ Implementação de referência: em desenvolvimento
+- 💰 Modelo econômico: definido em nível conceitual
 
-Este repositório começa pela **especificação**, não pela implementação.
-
----
-
-## ✍️ Autor
-
-**Armando Freire**
-
----
-
-> **Proof of Event existe para registrar eventos como fatos criptográficos,  
-> não como decisões sociais.**
 
 ---
 
