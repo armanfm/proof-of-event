@@ -61,6 +61,22 @@ O Certificador:
 > ⚠️ **Não existe rede PoE**.  
 > Cada certificador opera de forma independente.
 
+
+### Por que múltiplos certificadores?
+
+O Proof of Event não opera como uma rede única nem como um sistema de consenso.
+Cada Certificador PoE atua de forma independente, como prestador de serviço de
+certificação temporal.
+
+Certificadores são responsáveis apenas pelos eventos que certificam e não
+precisam concordar entre si. A escolha de um certificador é externa ao protocolo
+e depende de fatores como confiança institucional, relação contratual,
+jurisdição, reputação ou exigências regulatórias.
+
+O PoE registra o fato criptográfico de que um evento foi certificado por uma
+entidade específica em um determinado momento — não que múltiplas entidades
+concordaram sobre ele.
+
 ---
 
 ### Camada 3 — Camadas Semânticas (Opcional)
