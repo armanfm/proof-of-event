@@ -6,8 +6,9 @@ Este documento descreve o modelo de segurança do Proof of Event (PoE),
 incluindo princípios de design, ameaças consideradas, limitações explícitas
 e diretrizes para divulgação responsável de vulnerabilidades.
 
-O PoE é um protocolo de **registro determinístico de eventos**.
-Ele **não cria confiança**, **não valida conteúdo** e **não substitui verificação externa**.
+O PoE é um protocolo determinístico de registro temporal de eventos.
+Ele **não cria confiança**, **não valida conteúdo** e **não substitui
+verificação externa**.
 
 A confiança em um evento **existe antes** de sua submissão ao PoE.
 
@@ -17,15 +18,20 @@ A confiança em um evento **existe antes** de sua submissão ao PoE.
 
 No Proof of Event:
 
-> **A verificação ocorre antes.  
-> O registro ocorre depois.**
+**A verificação ocorre antes.  
+O registro ocorre depois.**
 
 O protocolo assume que:
-- o evento já foi verificado por um agente externo (verificador, oráculo, sistema);
+
+- o evento já foi verificado por um agente externo
+  (instituição, oráculo, sistema, autoridade);
 - a responsabilidade pela verificação **não pertence ao PoE**.
 
-O PoE apenas registra um **fato criptográfico**:
-> “este evento, representado por este hash, foi registrado nesta ordem”.
+O PoE registra apenas um fato criptográfico:
+
+> “Este evento, representado por este hash,
+> foi registrado por este certificador,
+> neste instante canônico.”
 
 ---
 
@@ -34,12 +40,18 @@ O PoE apenas registra um **fato criptográfico**:
 O PoE reduz sua superfície de ataque por design:
 
 - não utiliza consenso distribuído;
-- não utiliza criptografia assimétrica no ledger;
+- não utiliza mineração ou staking;
 - não executa verificação semântica;
 - não depende de inteligência artificial;
-- não possui governança on-chain.
+- não possui governança on-chain;
+- não depende de redes P2P obrigatórias.
 
-A segurança do sistema deriva da **simplicidade, determinismo e auditabilidade**.
+A segurança do sistema deriva de:
+
+- simplicidade;
+- determinismo;
+- auditabilidade;
+- reexecução independente.
 
 ---
 
@@ -48,12 +60,12 @@ A segurança do sistema deriva da **simplicidade, determinismo e auditabilidade*
 O PoE protege:
 
 - a **integridade temporal** do registro;
-- a **imutabilidade do histórico**;
-- a **ordem canônica de eventos (FIFO)**;
-- a **reexecução determinística** do ledger;
+- a **imutabilidade** do histórico;
+- a **associação criptográfica** entre evento e timestamp;
+- a **reexecução determinística** das provas;
 - a **verificabilidade independente** por terceiros.
 
-Uma vez registrado, um evento não pode ser alterado, removido ou reordenado
+Uma vez registrado, um evento **não pode ser alterado**
 sem que a divergência seja detectável.
 
 ---
@@ -63,11 +75,11 @@ sem que a divergência seja detectável.
 O PoE **não protege**:
 
 - a veracidade semântica de eventos;
-- a legitimidade legal de documentos;
+- a legitimidade jurídica de documentos;
 - a identidade ou intenção de participantes;
 - a correção da verificação externa;
-- dados armazenados fora do ledger;
-- resultados produzidos por ferramentas off-chain.
+- dados armazenados fora do ledger do certificador;
+- a disponibilidade de serviços externos (IPFS, Pinata, blockchains).
 
 Esses aspectos estão **explicitamente fora do escopo** do protocolo.
 
@@ -75,90 +87,104 @@ Esses aspectos estão **explicitamente fora do escopo** do protocolo.
 
 ## 6. Criptografia e Resiliência Pós-Quântica
 
-### 6.1 Justificativa Técnica
+### 6.1 Hashes Criptográficos
 
-O ledger PoE armazena exclusivamente **hashes criptográficos SHA-256**.
+O núcleo do PoE utiliza exclusivamente:
 
-Mesmo na presença de computadores quânticos capazes de quebrar
-criptografia assimétrica clássica (RSA, ECDSA):
+- **SHA-512**
+- hashes one-way
+- sem dependência de chaves privadas
 
-1. **Hashes são one-way**  
-   Algoritmos quânticos conhecidos não permitem reverter SHA-256 de forma prática.
+O protocolo assume a resistência a colisões do SHA-512.
 
-2. **A ordem é imutável por design**  
-   A sequência FIFO não depende de chaves privadas ou assinaturas.
+Eventos com `payload_hash` idêntico são tratados como o mesmo evento.
 
-3. **Assinaturas são externas ao protocolo**  
-   Esquemas criptográficos, inclusive pós-quânticos (PQC), podem ser utilizados
-   na verificação off-chain sem impactar o ledger histórico.
+---
 
-Exemplo ilustrativo:
+### 6.2 Assinaturas Criptográficas
 
-2015: Evento #100 → SHA256(dados) → 0xabc123...
-2035: Computador quântico disponível
-2035: Evento #100 → SHA256(dados) → 0xabc123... (inalterado)
+Assinaturas **NÃO fazem parte do núcleo do protocolo**.
 
+Quando utilizadas:
+- são opcionais;
+- são externas à prova PoE;
+- podem utilizar algoritmos clássicos ou pós-quânticos (ex: Dilithium).
 
-O PoE é **resiliente por design** a avanços criptográficos, pois não fixa
-algoritmos de identidade no núcleo do protocolo.
+A quebra de um esquema de assinatura **não invalida**
+o histórico do ledger PoE.
 
 ---
 
 ## 7. Modelo de Ameaças (Resumo)
 
 ### 7.1 Spam e Abuso
-- **Ameaça:** Submissão massiva de eventos.
-- **Mitigação:** Custo econômico obrigatório por evento (Token PoE).
 
-### 7.2 Sybil
-- **Ameaça:** Criação de múltiplas identidades.
-- **Mitigação:** Identidades adicionais não reduzem custo nem alteram ordem.
-
-### 7.3 Nós Maliciosos
-- **Ameaça:** Armazenadores tentam alterar histórico local.
-- **Mitigação:** Divergência de hash é detectável; nó deve resincronizar.
-
-### 7.4 Falha de Armazenadores
-- **Ameaça:** Nós offline ou instáveis.
-- **Mitigação:** Perda de remuneração e sincronização obrigatória ao retorno.
-
-### 7.5 Falha do FIFO
-- **Ameaça:** Indisponibilidade temporária.
-- **Mitigação:** O ledger permanece válido; apenas novas entradas são suspensas.
+**Ameaça:** Submissão massiva de eventos.  
+**Mitigação:** Custo econômico por evento (Token PoE, quando aplicável).
 
 ---
 
-## 8. Ameaças Específicas
+### 7.2 Ataques Sybil
 
-### 8.1 Reorganização de Histórico (History Replay)
-
-**Ameaça:**  
-Um operador apaga um ledger local e tenta recriar uma versão alternativa.
-
-**Mitigações possíveis:**  
-- múltiplos armazenadores independentes;
-- checkpoints públicos periódicos;
-- ancoragem opcional de hashes em blockchains públicas.
-
-Essas mitigações são **operacionais** e podem evoluir sem alterar o protocolo.
+**Ameaça:** Criação de múltiplas identidades.  
+**Mitigação:** Identidades adicionais não reduzem custo nem alteram provas.
 
 ---
 
-## 9. Ferramentas Off-chain e Inteligência
+### 7.3 Certificador Malicioso
 
-Ferramentas off-chain (ex.: `mind.bin`) podem:
+**Ameaça:** Certificador tenta negar eventos ou emitir provas incorretas.  
+**Mitigação:**  
+- auditoria externa;
+- reexecução independente;
+- responsabilidade institucional fora do protocolo.
+
+O PoE não impede má-fé institucional — ele a torna **detectável**.
+
+---
+
+### 7.4 Perda de Dados Externos (IPFS / Pinata)
+
+**Ameaça:** Indisponibilidade de storage externo.  
+**Mitigação:**  
+- o ledger do certificador é a fonte de verdade;
+- a prova PoE depende apenas de hashes e timestamps;
+- dados externos podem ser republicados sem alterar a prova.
+
+A queda do IPFS **não invalida** provas PoE.
+
+---
+
+## 8. Ataques de Replay
+
+O PoE é **intrinsecamente resistente a replay**.
+
+Cada prova:
+- associa um `payload_hash` a um `timestamp_canônico`;
+- produz um hash único (PoE_Proof);
+- não pode ser reutilizada para um instante diferente.
+
+Não são necessários:
+- nonces;
+- timestamps confiáveis do cliente;
+- listas de replay.
+
+---
+
+## 9. Ferramentas Off-chain
+
+Ferramentas off-chain podem:
 
 - armazenar dados completos;
 - executar verificação criptográfica;
 - aplicar análise semântica;
-- utilizar algoritmos clássicos ou pós-quânticos.
+- utilizar IA ou sistemas especialistas.
 
 Falhas nessas ferramentas **não comprometem**:
-- a validade do ledger;
-- a ordem FIFO;
-- a imutabilidade do histórico.
 
-O PoE não depende dessas ferramentas para sua segurança.
+- a validade das provas;
+- o ledger do certificador;
+- a reexecução determinística.
 
 ---
 
@@ -166,23 +192,26 @@ O PoE não depende dessas ferramentas para sua segurança.
 
 ### 10.1 Processo
 
-1. **Reportar:** contato privado com o mantenedor do projeto.
-2. **Confirmar:** até 72h para confirmação de recebimento.
-3. **Correção:**  
-   - até 30 dias para vulnerabilidades críticas;  
-   - até 90 dias para vulnerabilidades médias.
-4. **Divulgação:** após correção disponível.
+- **Reportar:** contato privado com o mantenedor
+- **Confirmação:** até 72h
+- **Correção:**
+  - críticas: até 30 dias
+  - médias: até 90 dias
+- **Divulgação:** após correção disponível
+
+---
 
 ### 10.2 Escopo
 
-**Inclui:**
-- manipulação da ordem FIFO;
-- bypass de pagamento obrigatório;
-- corrupção do ledger canônico.
+Inclui:
+- geração incorreta de provas;
+- quebra de determinismo;
+- corrupção do ledger;
+- falhas na serialização canônica.
 
-**Exclui:**
+Exclui:
 - bugs em implementações específicas;
-- falhas em sistemas off-chain;
+- falhas em ferramentas off-chain;
 - ataques econômicos de mercado;
 - erros de verificação externa.
 
@@ -193,24 +222,19 @@ O PoE não depende dessas ferramentas para sua segurança.
 O PoE aplica múltiplas camadas independentes:
 
 ### Camada Criptográfica
-- hashes SHA-256;
-- encadeamento imutável;
-- independência de criptografia assimétrica.
-
-### Camada Econômica
-- custo real por evento;
-- desincentivo a spam;
-- alinhamento por redistribuição.
+- SHA-512;
+- hashes determinísticos;
+- independência de assinaturas.
 
 ### Camada Operacional
-- replicação independente;
-- sincronização determinística;
-- ordenação centralizada e auditável.
+- ledger soberano do certificador;
+- reexecução independente;
+- transparência total.
 
 ### Camada Institucional
-- transparência total;
-- leitura pública do ledger;
-- separação clara de responsabilidades.
+- responsabilidade explícita;
+- separação clara de papéis;
+- auditoria externa.
 
 A falha de uma camada **não compromete as demais**.
 
@@ -221,11 +245,12 @@ A falha de uma camada **não compromete as demais**.
 O Proof of Event **não promete**:
 
 - inviolabilidade absoluta;
-- resistência total a todos os ataques;
-- proteção contra má-fé na verificação externa;
-- garantias econômicas ou financeiras.
+- proteção contra má-fé institucional;
+- garantias econômicas;
+- verdade semântica.
 
-A segurança do sistema decorre da **clareza de seus limites**, não de promessas.
+A segurança do sistema decorre da clareza de seus limites,
+não de promessas.
 
 ---
 
@@ -239,34 +264,10 @@ O Proof of Event foi projetado para ser:
 - honesto quanto às suas responsabilidades.
 
 O protocolo não cria confiança.
-Ele registra, de forma imutável, eventos que **já foram confiados** fora dele.
+Ele registra, de forma imutável, eventos
+que já foram confiados fora dele.
 
-A blockchain não decide.  
-Ela testemunha.
+**A blockchain não decide.  
+Ela testemunha.**
 
-
-## 14. Resistência a Replay (Anti-Replay Nativo)
-
-O Proof of Event (PoE) é **intrinsecamente resistente a ataques de replay**.
-
-Cada evento submetido ao protocolo DEVE referenciar explicitamente o
-`previous_event_hash` correspondente ao último evento aceito no ledger
-canônico no momento da submissão.
-
-Como consequência:
-
-- Um evento só é válido em **um único ponto da linha do tempo lógica**;
-- Eventos reenviados fora de ordem são **deterministicamente rejeitados**;
-- Não existe reutilização válida de eventos já processados;
-- Não é necessário o uso de nonces, timestamps confiáveis ou listas de replay.
-
-A resistência a replay **emerge da estrutura do protocolo**, não de regras
-auxiliares.
-
-Qualquer tentativa de replay resulta na quebra do encadeamento criptográfico
-e na rejeição imediata pelo FIFO soberano (`ERR_BAD_PREV_HASH`).
-
-Essa propriedade elimina classes inteiras de ataques comuns em sistemas
-distribuídos e blockchains tradicionais, mantendo o protocolo simples,
-auditável e determinístico.
 
