@@ -279,11 +279,65 @@ SHA-512(a1b2c3... || 2024-01-01T12:00:00.000Z)
 ### A.3 Recibo
 
 
-{
-  "poe_proof": "d8e7f2a1...",
-  "payload_hash": "a1b2c3...",
-  "timestamp_canônico": "2024-01-01T12:00:00.000Z",
-  "certificador_id": "poe:c6c1024c...",
-  "version": "0.1"
-}
+<img width="446" height="229" alt="image" src="https://github.com/user-attachments/assets/b5eb2a2f-8fbb-4bf5-a60e-8d485e8daa6a" />
+
+
+## A.4 Verificação Independente
+
+A verificação de uma prova PoE **NÃO depende do Certificador** após a emissão do recibo.
+
+Qualquer parte pode verificar a prova de forma independente seguindo os passos abaixo.
+
+### Passo 1 — Recalcular a Prova
+
+Recalcular o hash utilizando exatamente a mesma função criptográfica definida pelo protocolo:
+
+```text
+SHA-512(payload_hash || timestamp_canônico)
+```
+
+Onde:
+
+- `payload_hash` é o hash do evento original
+- `timestamp_canônico` é o timestamp emitido pelo Certificador
+- `||` representa concatenação determinística de bytes
+
+### Passo 2 — Comparar com a Prova Emitida
+
+Comparar o resultado do cálculo com o campo `poe_proof` presente no recibo:
+
+```text
+poe_proof
+```
+
+### Resultado da Verificação
+
+Se os valores coincidirem:
+
+```text
+✅ Prova PoE válida
+```
+
+Se os valores não coincidirem:
+
+```text
+❌ Prova PoE inválida ou adulterada
+```
+
+## Encerramento do Apêndice
+
+Este procedimento é **suficiente e completo** para validar qualquer prova PoE
+emitida por um Certificador compatível com o protocolo **PoE v0.1**.
+
+Nenhuma confiança adicional, assinatura, chave privada ou infraestrutura externa
+é necessária para a verificação.
+
+A validade da prova decorre exclusivamente de:
+
+- determinismo criptográfico;
+- resistência a colisões do SHA-512;
+- clareza e imutabilidade do timestamp canônico.
+
+**A blockchain não decide. Ela testemunha.**
+
 
