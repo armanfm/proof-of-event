@@ -11,12 +11,16 @@
 
 ## 1. Escopo do Protocolo
 
-O Proof of Event (PoE) é um protocolo determinístico para registro de eventos externos, cujo objetivo é produzir uma **prova criptográfica imutável, auditável e reexecutável de existência temporal**.
+O Proof of Event (PoE) é um protocolo determinístico para registro de eventos externos,
+cujo objetivo é produzir uma **prova criptográfica imutável, auditável e reexecutável
+de existência temporal**.
 
 O PoE **não valida significado**, **não decide verdade** e **não resolve disputas**.  
-Ele registra eventos cuja ocorrência e validação **já foram tratadas fora do protocolo** (Camada 1).
+Ele registra eventos cuja ocorrência e validação **já foram tratadas fora do protocolo**
+(Camada 1).
 
-Esta especificação define **exclusivamente a Camada 2 — Ledger Determinístico PoE** e o papel dos **Certificadores PoE**.
+Esta especificação define **exclusivamente a Camada 2 — Ledger Determinístico PoE**
+e o papel dos **Certificadores PoE**.
 
 ---
 
@@ -24,7 +28,8 @@ Esta especificação define **exclusivamente a Camada 2 — Ledger Determinísti
 
 ### 2.1 Determinismo Absoluto
 
-Dada a mesma entrada válida, qualquer implementação compatível do PoE **DEVE** produzir exatamente a mesma prova criptográfica.
+Dada a mesma entrada válida, qualquer implementação compatível do PoE **DEVE**
+produzir exatamente a mesma prova criptográfica.
 
 Não existe aleatoriedade, votação ou interpretação subjetiva.
 
@@ -50,9 +55,12 @@ O protocolo não resolve conflitos sociais, jurídicos ou semânticos.
 
 A prova produzida pelo PoE baseia-se **exclusivamente na ancoragem temporal**.
 
-O protocolo atribui um **timestamp canônico**, gerado pelo próprio sistema, no momento da aceitação do evento.
+O protocolo atribui um **timestamp canônico**, gerado pelo Certificador PoE
+no momento da aceitação do evento.
 
 A ordenação entre eventos **não é objetivo do PoE** e **não possui valor probatório**.
+Qualquer relação de ordem é consequência operacional do certificador,
+não propriedade do protocolo.
 
 ---
 
@@ -60,7 +68,7 @@ A ordenação entre eventos **não é objetivo do PoE** e **não possui valor pr
 
 Eventos aceitos **NUNCA** são alterados, removidos ou reescritos.
 
-O ledger é estritamente append-only.
+O ledger é estritamente append-only dentro de cada certificador.
 
 ---
 
@@ -80,10 +88,11 @@ O protocolo aplica apenas regras **mecânicas e determinísticas**.
 
 - **Evento Externo (Camada 1):** Fato ocorrido fora do PoE.
 - **Certificador PoE:** Entidade que executa o protocolo PoE, recebe eventos validados off-chain e emite provas PoE.
-- **Evento Canônico:** Representação determinística do evento externo.
+- **Evento Canônico:** Representação determinística reduzida do evento externo.
 - **Timestamp Canônico:** Marca temporal gerada pelo Certificador PoE no momento da aceitação.
-- **Prova PoE:** Associação criptográfica entre o hash do evento e o timestamp canônico.
+- **Prova PoE (PoE_Proof):** Associação criptográfica entre o hash do evento e o timestamp canônico.
 - **Ledger PoE:** Registro append-only das provas temporais emitidas por um Certificador PoE.
+- **Certificador_ID:** Identificador estável e imutável do certificador.
 - **Token PoE (Opcional):** Unidade econômica utilizada exclusivamente para liquidação operacional do uso do protocolo.
 
 ---
@@ -118,19 +127,20 @@ O PoE **não define nem impõe**:
 
 Cada certificador opera de forma **soberana e independente**.
 
-### Certificadores PoE
+---
+
+### 4.3 Certificadores PoE
 
 Certificadores PoE são entidades responsáveis por prestar o serviço de
 certificação temporal de eventos externos.
 
 Eles podem ser instituições, oráculos, empresas, órgãos públicos ou operadores
-autorizados, conforme o contexto de uso. O protocolo PoE não define critérios
-de escolha, reputação ou autoridade dos certificadores — essas relações existem
-fora do sistema.
+autorizados, conforme o contexto de uso.
+
+O protocolo PoE **não define critérios de escolha, reputação ou autoridade**
+dos certificadores — essas relações existem fora do sistema.
 
 Cada certificador:
-
-- opera de forma independente;
 - certifica apenas eventos sob sua responsabilidade;
 - responde legal e operacionalmente pelos eventos que aceita;
 - não participa de consenso;
@@ -138,7 +148,6 @@ Cada certificador:
 
 Múltiplos certificadores existem para refletir a realidade do mundo externo:
 diferentes eventos exigem diferentes entidades responsáveis.
-
 
 ---
 
@@ -148,7 +157,7 @@ diferentes eventos exigem diferentes entidades responsáveis.
 
 A prova PoE é definida exclusivamente por:
 
-PoE_Proof = HASH(payload_hash || timestamp_canônico)
+PoE_Proof = SHA-512(payload_hash || timestamp_canônico)
 
 
 Onde:
@@ -169,99 +178,11 @@ A prova PoE é:
 
 ---
 
-## 6. Formato do Evento Canônico
+## 6. Verificação da Prova PoE
 
-Todo evento submetido ao PoE **DEVE** conter, no mínimo:
+A verificação de uma prova PoE consiste em:
 
-- `payload_hash`;
-- metadados de versão (quando aplicável).
+1. Obter o `payload_hash`
+2. Obter o `timestamp_canônico`
+3. Recomputar:
 
-Campos adicionais podem existir, desde que **NÃO interfiram** na definição da prova canônica.
-
----
-
-## 7. Timestamp Canônico
-
-- O timestamp canônico é gerado exclusivamente pelo Certificador PoE.
-- Ele é a **única referência temporal válida** da prova.
-- Timestamps externos são apenas informativos.
-
-O nível de precisão (milissegundos, nanossegundos, etc.) é decisão do certificador, desde que determinística.
-
----
-
-## 8. Aceitação de Eventos (Normativo)
-
-Um evento é aceito pelo PoE se, e somente se:
-
-- o formato canônico é respeitado;
-- o timestamp canônico é atribuído pelo Certificador PoE;
-- requisitos operacionais (ex: pagamento, se aplicável) são atendidos.
-
-Não existe rejeição baseada em conteúdo semântico.
-
----
-
-## 9. Eventos Arbitrários e Conteúdo “Errado”
-
-O PoE **não diferencia** eventos de produção, teste, erro ou experimento.
-
-Qualquer evento que:
-- respeite o formato;
-- cumpra as regras mecânicas;
-
-**DEVE** ser aceito pelo certificador.
-
-Correções ou invalidações ocorrem **exclusivamente por novos eventos**, preservando a trilha de auditoria.
-
----
-
-## 10. Token PoE (Camada Operacional Opcional)
-
-O Token PoE pode ser utilizado para:
-- pagamento pelo uso do serviço de certificação;
-- liquidação de custos operacionais.
-
-O token:
-- não é emitido pelo núcleo PoE;
-- não participa da prova criptográfica;
-- não confere governança;
-- não promete retorno financeiro.
-
----
-
-## 11. Segurança
-
-A segurança do PoE deriva de:
-- determinismo;
-- reexecução independente;
-- imutabilidade do ledger;
-- verificabilidade criptográfica da prova.
-
-Confiança é substituída por verificação.
-
----
-
-## 12. Versionamento
-
-Mudanças no protocolo:
-- **DEVEM** incrementar a versão;
-- **DEVEM** declarar compatibilidade;
-- **NUNCA** alteram provas já emitidas.
-
----
-
-## 13. Retenção do Ledger (Normativo)
-
-Um Certificador PoE **DEVE** manter a integridade completa de seu ledger determinístico desde o GENESIS até a prova mais recente.
-
-A retenção parcial do histórico **é proibida** dentro de uma mesma instância certificadora.
-
----
-
-## 14. Encerramento
-
-O Proof of Event existe para registrar eventos como **fatos criptográficos**,  
-não como decisões sociais.
-
-**A blockchain não decide. Ela testemunha.**
