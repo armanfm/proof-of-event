@@ -167,6 +167,39 @@ A ordem no ledger:
 Ela representa **exclusivamente a ordem local de aceitação**
 por aquele Certificador PoE.
 
+#### Exemplo Prático de Ordem do Ledger
+
+Suponha que um Certificador PoE receba três eventos distintos nesta ordem de aceitação:
+
+- Evento A
+- Evento B
+- Evento C
+
+O ledger determinístico do Certificador será registrado como:
+
+
+[A, B, C]
+
+
+Isso **NÃO significa** que:
+
+- o evento A ocorreu antes do evento B no mundo real;
+- o evento B é consequência causal do evento A;
+- o evento C é semanticamente mais válido que A ou B;
+- exista qualquer precedência jurídica, lógica ou factual entre os eventos.
+
+Isso **SIGNIFICA APENAS** que:
+
+- o Certificador PoE aceitou o evento A;
+- depois aceitou o evento B;
+- depois aceitou o evento C.
+
+A ordem do ledger representa **exclusivamente a ordem de aceitação pelo Certificador**,  
+e **NÃO** a ordem de ocorrência no mundo real, causalidade entre eventos ou hierarquia de validade.
+
+Qualquer interpretação adicional está explicitamente fora do escopo do protocolo PoE.
+
+
 ---
 
 ## 7. Armazenamento Externo (Opcional)
