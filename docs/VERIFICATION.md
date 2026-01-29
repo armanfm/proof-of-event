@@ -1,11 +1,13 @@
 # Verificação de Eventos no Proof of Event (PoE)
 
+---
+
 ## 1. Princípio Fundamental
 
 No Proof of Event (PoE), **a verificação de eventos NÃO é executada pelo protocolo**.
 
 O PoE registra fatos criptográficos (hashes) de eventos previamente verificados
-fora do sistema. A responsabilidade pela verificação pertence ao **cliente**
+fora do sistema. A responsabilidade pela verificação pertence ao **Cliente**
 ou a ferramentas off-chain por ele utilizadas.
 
 > O PoE **testemunha** eventos.  
@@ -16,7 +18,8 @@ ou a ferramentas off-chain por ele utilizadas.
 ## 2. Ledger PoE (Fonte Factual)
 
 O ledger PoE é publicado em formato simples e acessível (ex.: arquivos TXT),
-contendo exclusivamente hashes criptográficos em ordem FIFO canônica.
+contendo exclusivamente **registros criptográficos append-only**, conforme
+aceitos por um Certificador PoE.
 
 Características do ledger:
 
@@ -24,17 +27,18 @@ Características do ledger:
 - imutável (append-only);
 - leitura gratuita;
 - independente de tokens;
-- independente de semântica ou inteligência artificial.
+- independente de semântica ou inteligência artificial;
+- ordenação **local e operacional**, sem valor probatório global.
 
-Qualquer pessoa pode baixar o ledger e verificar localmente a existência
-de um hash específico.
+Qualquer pessoa pode baixar o ledger e verificar localmente
+a existência de um hash específico.
 
 ---
 
 ## 3. Verificação pelo Cliente (Off-chain)
 
 A verificação de um evento ocorre **fora do protocolo PoE**, por meio de
-ferramentas locais ou serviços delegados pelo cliente.
+ferramentas locais ou serviços delegados pelo Cliente.
 
 Essa verificação pode envolver, por exemplo:
 
@@ -48,7 +52,7 @@ O protocolo PoE **não impõe nem executa** esses processos.
 
 ---
 
-## 4. mind.bin como Ferramenta de Verificação
+## 4. `mind.bin` como Ferramenta de Verificação
 
 O `mind.bin` é um artefato off-chain utilizado para facilitar a verificação,
 indexação e análise de eventos registrados no PoE.
@@ -56,10 +60,10 @@ indexação e análise de eventos registrados no PoE.
 O `mind.bin`:
 
 - consome o ledger PoE público (TXT);
-- opera localmente ou em ambiente controlado pelo cliente;
+- opera localmente ou em ambiente controlado pelo Cliente;
 - pode armazenar dados completos, metadados e assinaturas;
 - não altera o ledger;
-- não interfere na ordem FIFO;
+- não interfere no mecanismo de append do Certificador;
 - não é requisito para validade do PoE.
 
 O uso do `mind.bin` é **opcional** e específico por aplicação.
@@ -70,9 +74,9 @@ O uso do `mind.bin` é **opcional** e específico por aplicação.
 
 | Componente | Responsabilidade |
 |-----------|------------------|
-| PoE (Ledger/FIFO) | Registro imutável e ordenado de hashes |
-| Cliente | Verificação do evento |
-| Ferramentas off-chain (ex.: mind.bin) | Auxílio à verificação e análise |
+| PoE (Ledger) | Registro imutável e determinístico de hashes |
+| Cliente | Verificação e interpretação do evento |
+| Ferramentas off-chain (ex.: `mind.bin`) | Auxílio à verificação e análise |
 
 Essa separação garante:
 
@@ -89,10 +93,10 @@ Mesmo na ausência de qualquer ferramenta adicional:
 
 - o ledger continua válido;
 - os hashes continuam verificáveis;
-- a prova continua existindo.
+- a prova criptográfica continua existindo.
 
-Nenhuma dependência de IA, token ou serviço externo é necessária para
-verificar um evento registrado no PoE.
+Nenhuma dependência de IA, token ou serviço externo é necessária
+para verificar um evento registrado no PoE.
 
 ---
 
@@ -100,9 +104,9 @@ verificar um evento registrado no PoE.
 
 No Proof of Event:
 
-**A verdade factual é pública.  
-A verificação é livre.  
-A inteligência é opcional.**
+**A verdade factual é pública.**  
+**A verificação é livre.**  
+**A inteligência é opcional.**
 
 O protocolo existe para registrar fatos criptográficos,
 não para decidir como eles devem ser interpretados.
