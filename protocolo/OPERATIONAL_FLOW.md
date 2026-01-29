@@ -1,272 +1,289 @@
 # Proof of Event (PoE)
-## Protocol v0.1 — Fluxo Operacional do Certificador
-(Event → Timestamp → Append)
+## Protocolo v0.1 — Fluxo Operacional (Certificação → Append)
 
 **Versão:** 0.1  
 **Status:** Operacional (executável no papel)  
-**Compatível com:** `SPEC.md` v0.1  
+**Compatibilidade:** Implementa integralmente `SPEC.md` v0.1, sem extensões  
+**Escopo:** Documento procedural (operacional), não normativo  
 **Autor:** Armando Freire  
+
+---
+
+## Estrutura de Documentação
+
+**TIER 1 — README.md**  
+→ O que é o PoE (visão geral, stakeholders, motivação)
+
+**TIER 2 — SPEC.md**  
+→ Regras normativas do protocolo (o que DEVE / NÃO DEVE)
+
+**TIER 3 — Fluxo Operacional (este documento)**  
+→ Como o protocolo roda na prática (operadores, implementação)
 
 ---
 
 ## 1. Objetivo deste Documento
 
-Este documento define o **fluxo operacional do Proof of Event (PoE) v0.1**,
-descrevendo como um evento externo, já verificado fora do protocolo,
-é submetido a um **Certificador PoE**, recebe um **timestamp canônico**
-e é registrado em um **ledger determinístico append-only**.
+Este documento define o **fluxo operacional** do PoE v0.1: como um evento,
+produzido por um verificador/oráculo, é recebido por um **Certificador PoE**,
+recebe um **timestamp canônico**, gera uma **prova PoE** e é persistido em um
+ledger **append-only**.
 
-Este documento **NÃO altera** o `SPEC.md`.
-Ele apenas remove ambiguidades de implementação,
-explicitando a sequência de operações,
-os artefatos produzidos e o comportamento esperado sob falhas.
+Este documento **não altera** o `SPEC.md`.
+Ele apenas remove ambiguidades de implementação:
+ordem de chamadas, estados operacionais, erros e comportamento sob falhas.
 
 ---
 
 ## 2. Entidades
 
-O PoE v0.1 envolve apenas as seguintes entidades:
+- **Client (Verificador / Oráculo):**
+  Prepara o evento, valida off-chain e submete ao Certificador PoE.
 
-- **Client (Verificador / Sistema Externo)**  
-  Entidade responsável por verificar o evento fora do PoE e submeter seu hash.
+- **Certificador PoE:**
+  Executa o protocolo PoE, atribui timestamp canônico, gera a prova e mantém
+  o ledger determinístico.
 
-- **Certificador PoE**  
-  Entidade que executa o protocolo PoE:
-  atribui timestamp canônico, gera a prova e mantém o ledger soberano.
-
-- **Ledger do Certificador**  
-  Registro local, determinístico e append-only das provas PoE emitidas.
-
-Não existe consenso, coordenação ou ordenação global entre certificadores.
+- **Ledger do Certificador:**
+  Registro append-only das provas emitidas por aquele certificador.
 
 ---
 
 ## 3. Artefatos
 
-### 3.1 Evento Canônico (Entrada)
+### 3.1 Evento Canônico
 
-O evento submetido ao PoE consiste, no mínimo, em:
+Conforme definido no `SPEC.md` v0.1, o evento canônico contém, no mínimo:
 
-- `payload_hash` — hash criptográfico do evento externo
-- metadados opcionais (fora do núcleo)
+- `payload_hash`
+- metadados de versão (quando aplicável)
 
-O conteúdo semântico do evento **não é avaliado** pelo PoE.
-
----
-
-### 3.2 Timestamp Canônico
-
-O timestamp canônico:
-
-- é gerado exclusivamente pelo Certificador PoE;
-- representa o instante de aceitação do evento;
-- é expresso em UTC;
-- possui precisão mínima de milissegundos;
-- segue o formato ISO 8601:  
-  `YYYY-MM-DDTHH:MM:SS.sssZ`
-
-Timestamps fornecidos pelo Client são apenas informativos
-e **não possuem valor probatório** no PoE.
+O significado do evento **não é avaliado** pelo PoE.
 
 ---
 
-### 3.3 Prova PoE (PoE_Proof)
+### 3.2 Recibo PoE (Receipt)
 
-A prova PoE é definida como:
-
-
-
-PoE_Proof = SHA-512(payload_hash || timestamp_canônico)
-
-Esta é a **única unidade mínima de prova** do protocolo.
-
----
-
-### 3.4 Recibo PoE (Saída)
-
-Após a aceitação do evento, o Certificador PoE **DEVE** retornar um recibo
-contendo, no mínimo:
+Ao aceitar um evento, o Certificador PoE **DEVE** retornar um recibo contendo:
 
 - `poe_proof`
 - `payload_hash`
 - `timestamp_canônico`
 - `certificador_id`
 - `version`
+- `metadata` (opcional, fora da prova)
 
-Metadados adicionais (ex.: assinatura PQC, custo pago, referências externas)
-são opcionais e **não fazem parte da prova criptográfica**.
+O recibo é suficiente para verificação independente.
 
 ---
 
-## 4. Fluxo Operacional
+## 4. Estados Operacionais do Certificador
 
-### 4.1 Preparação do Evento (Client)
+O Certificador PoE pode operar nos seguintes estados:
+
+- **ONLINE:** aceita novos eventos normalmente.
+- **DEGRADED:** aceita eventos, mas com limitações operacionais.
+- **OFFLINE:** não aceita novos eventos.
+
+**Observação:**  
+Estados operacionais **NÃO alteram** a validade das provas já emitidas.
+
+---
+
+## 5. Códigos de Erro (Normativo)
+
+O Certificador **DEVE** responder com erros determinísticos:
+
+- `ERR_BAD_FORMAT` — formato inválido
+- `ERR_BAD_VERSION` — versão não suportada
+- `ERR_NO_TOKEN` — pagamento exigido e não efetuado
+- `ERR_DUPLICATE_EVENT` — evento duplicado (deduplicação)
+- `ERR_CERTIFIER_OFFLINE` — certificador indisponível
+- `ERR_INTERNAL` — erro interno (uso mínimo)
+
+---
+
+## 6. Fluxo Operacional  
+### Submit → Certify → Append → Receipt
+
+### 6.1 Preparação do Evento (Client)
 
 O Client:
 
-1. verifica o evento fora do PoE (Camada 1);
-2. gera o `payload_hash` de forma determinística;
-3. prepara a submissão ao Certificador PoE.
-
-O PoE **não participa** dessa verificação.
+- valida o evento fora do PoE (Camada 1);
+- gera `payload_hash` (ex.: SHA-512);
+- prepara o evento canônico.
 
 ---
 
-### 4.2 Submissão ao Certificador
+### 6.2 Submissão ao Certificador (Client → Certificador)
 
-O Client envia ao Certificador PoE:
+O Client envia:
 
-- `payload_hash`;
-- metadados opcionais;
-- comprovação de pagamento, se aplicável (fora do núcleo).
+- evento canônico;
+- pagamento, se exigido pela operação.
 
----
+O Certificador valida:
 
-### 4.3 Aceitação do Evento (Certificador)
+- formato canônico;
+- versão suportada;
+- deduplicação por `payload_hash` ou `event_id` (se aplicável);
+- requisitos operacionais (ex.: pagamento).
 
-Ao receber uma submissão válida, o Certificador PoE:
-
-1. valida o formato mínimo exigido;
-2. verifica requisitos operacionais (ex.: pagamento, se aplicável);
-3. gera o timestamp canônico;
-4. calcula a PoE_Proof;
-5. registra o evento no ledger append-only;
-6. emite o Recibo PoE.
-
-Não existe rejeição baseada em conteúdo semântico.
+Se aprovado, o evento é aceito.
 
 ---
 
-### 4.4 Append no Ledger
+### 6.3 Certificação (Certificador)
+
+O Certificador:
+
+1. gera o **timestamp canônico** (UTC);
+2. calcula a prova PoE:
+
+PoE_Proof = SHA-512(payload_hash || timestamp_canônico)
+
+3. registra a prova no ledger append-only;
+4. emite o recibo PoE.
+
+---
+
+### 6.4 Append no Ledger
 
 O ledger do Certificador:
 
-- é estritamente append-only;
-- mantém registros imutáveis;
-- preserva a ordem local de aceitação;
-- não sofre reescrita ou exclusão.
+- é append-only;
+- nunca remove eventos;
+- nunca reescreve histórico.
 
-A ordem do ledger **não possui valor semântico ou probatório global**;
-ela reflete apenas a sequência local de aceitação.
+#### Ordem do Ledger (Esclarecimento Importante)
 
----
+A ordem no ledger:
 
-## 5. Pagamento (Opcional)
+- **NÃO** representa ordem de ocorrência no mundo real;
+- **NÃO** implica causalidade;
+- **NÃO** estabelece precedência jurídica externa.
 
-Quando utilizado, o Token PoE:
-
-- é requisito operacional para aceitação do evento;
-- deve ser liquidado antes da emissão da prova;
-- **não participa** do cálculo da PoE_Proof;
-- **não interfere** no determinismo do ledger.
-
-A falha no pagamento **PODE** resultar em rejeição.
-
----
-
-## 6. Assinaturas Criptográficas (Opcional)
-
-Assinaturas criptográficas:
-
-- são externas ao núcleo do PoE;
-- podem utilizar algoritmos clássicos ou pós-quânticos (PQC);
-- autenticam o Certificador, não a prova.
-
-A ausência de assinatura **NÃO invalida** uma prova PoE.
-
-Assinaturas **não fazem parte do caminho crítico**
-de aceitação de eventos.
+Ela representa **exclusivamente a ordem local de aceitação**
+por aquele Certificador PoE.
 
 ---
 
 ## 7. Armazenamento Externo (Opcional)
 
-Dados completos do evento podem ser armazenados externamente
-(ex.: IPFS, Pinata, bancos de dados institucionais).
+Dados completos podem ser armazenados externamente
+(ex.: IPFS, Pinata, bancos institucionais).
 
 Esses sistemas:
 
 - são opcionais;
 - não fazem parte do protocolo PoE;
-- não afetam a validade da prova.
+- não interferem na prova criptográfica.
 
-A indisponibilidade de armazenamento externo
-**NÃO invalida** provas PoE já emitidas.
+### 7.1 Ledger vs. Armazenamento Externo (Normativo)
 
-O ledger do Certificador é a fonte de verdade.
+O ledger do Certificador **É A FONTE PRIMÁRIA E AUTORITATIVA**.
 
----
+Armazenamento externo é apenas:
 
-## 8. Falhas Operacionais
+- replicação;
+- conveniência ao Client;
+- distribuição de dados completos.
 
-### 8.1 Certificador Indisponível
+Se o armazenamento externo falhar:
 
-Se um Certificador estiver indisponível:
-
-- novas submissões não são aceitas;
-- provas já emitidas permanecem válidas;
-- ao retornar, o ledger continua a partir do último estado.
-
----
-
-### 8.2 Falhas de Rede ou Cliente
-
-Falhas de conexão do Client:
-
-- não invalidam provas já emitidas;
-- exigem nova submissão, se necessário;
-- não geram deduplicação automática no núcleo
-  (políticas de retry são responsabilidade do Client).
+- ✅ Provas PoE permanecem válidas
+- ✅ Verificação pode ser feita via ledger
+- ❌ Apenas metadados opcionais podem ser perdidos
 
 ---
 
-## 9. Eventos Incorretos ou de Teste
+## 8. Falhas Realistas
 
-O PoE aceita eventos de teste ou conteúdo incorreto se:
+### 8.1 Certificador Offline
 
-- o formato mínimo for respeitado;
-- os requisitos operacionais forem atendidos.
+- não aceita novos eventos;
+- histórico existente permanece válido;
+- nenhuma prova é invalidada.
 
-Eventos aceitos **NUNCA** são apagados.
+### 8.2 Client Offline
 
-Correções ou invalidações devem ocorrer
-por **novos eventos**, preservando a trilha histórica.
+- problema do Client;
+- pode reenviar quando retornar;
+- deduplicação evita cobrança dupla.
+
+**Não há promessa de 100% uptime.**
 
 ---
 
-## 10. Garantias do Protocolo
+## 9. Eventos de Teste e Conteúdo “Errado”
 
-O PoE v0.1 garante:
+O PoE aceita qualquer evento que:
 
-- determinismo;
-- imutabilidade;
-- verificabilidade independente;
-- separação clara de responsabilidades.
+- respeite o formato;
+- cumpra requisitos operacionais.
 
-O PoE **não garante**:
+Se pagou e seguiu o formato, **é aceito**.
 
-- verdade semântica;
-- legitimidade jurídica;
-- consenso entre entidades;
-- ordenação global de eventos.
+Neutralidade é mecânica, não discursiva.
+
+Correções ocorrem apenas por **novo evento**.
+
+---
+
+## 10. Interface Mínima (Sugerida)
+
+- `POST /submit` — submete evento e retorna recibo ou erro
+- `GET /head` — retorna estado atual do ledger
+- `GET /ledger` — leitura pública do histórico
 
 ---
 
 ## 11. Encerramento
 
-O fluxo operacional do Proof of Event é intencionalmente simples:
+Este fluxo operacional define um sistema simples e honesto:
 
-**Sistemas verificam.  
-Certificadores testemunham.  
-Ledgers preservam.**
+**Clients verificam. Certificadores testemunham. Ledgers preservam.**
 
-O PoE não decide.
-Ele apenas registra, de forma imutável,
-eventos que já foram aceitos fora dele.
+O Proof of Event não decide.
+Ele registra fatos criptográficos.
 
-**A blockchain não decide.  
-Ela testemunha.**
+**A blockchain não decide. Ela testemunha.**
+
+---
+
+## Apêndice A — Sessão de Certificação Completa
+
+### A.1 Submissão (Client)
+
+Evento externo:  
+“Contrato XYZ assinado”
+
+Hash off-chain:  
+SHA-512("Contrato XYZ") = `a1b2c3...`
+
+---
+
+### A.2 Certificação
+
+Timestamp canônico:  
+`2024-01-01T12:00:00.000Z`
+
+Prova:
+
+SHA-512(a1b2c3... || 2024-01-01T12:00:00.000Z)
 
 
+---
 
+### A.3 Recibo
+
+
+{
+  "poe_proof": "d8e7f2a1...",
+  "payload_hash": "a1b2c3...",
+  "timestamp_canônico": "2024-01-01T12:00:00.000Z",
+  "certificador_id": "poe:c6c1024c...",
+  "version": "0.1"
+}
 
