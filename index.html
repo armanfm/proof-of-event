@@ -9,94 +9,24 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
-        
-        /* Animação suave */
         .fade-in { animation: fadeIn 0.3s ease-in; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        
-        /* Card com sombra suave */
-        .card { 
-            border: 1px solid #e5e7eb; 
-            border-radius: 12px; 
-            transition: all 0.2s ease;
-        }
-        .card:hover { 
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); 
-            transform: translateY(-2px);
-        }
-        
-        /* Botões */
-        .btn-primary { 
-            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
-            color: white; 
-            padding: 10px 24px; 
-            border-radius: 8px; 
-            font-weight: 600; 
-            border: none; 
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .btn-primary:hover { 
-            transform: translateY(-1px); 
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-        }
-        
-        .btn-secondary { 
-            background: white; 
-            color: #374151; 
-            padding: 10px 24px; 
-            border-radius: 8px; 
-            font-weight: 600; 
-            border: 1px solid #d1d5db;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .btn-secondary:hover { 
-            background: #f9fafb; 
-            border-color: #9ca3af;
-        }
-        
-        /* Nav tabs */
-        .nav-tab { 
-            padding: 12px 20px; 
-            border-radius: 8px; 
-            cursor: pointer;
-            transition: all 0.2s;
-            font-weight: 500;
-        }
-        .nav-tab.active { 
-            background-color: #eff6ff; 
-            color: #3b82f6;
-        }
-        .nav-tab:hover:not(.active) { 
-            background-color: #f9fafb;
-        }
-        
-        /* Input estilizado */
-        .input-field {
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            padding: 12px 16px;
-            width: 100%;
-            transition: all 0.2s;
-        }
-        .input-field:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-        
-        /* Logo */
-        .logo {
-            font-weight: 700;
-            font-size: 1.5rem;
-            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+        .card { border: 1px solid #e5e7eb; border-radius: 12px; transition: all 0.2s ease; }
+        .card:hover { box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); transform: translateY(-2px); }
+        .btn-primary { background: linear-gradient(90deg, #3b82f6, #8b5cf6); color: white; padding: 10px 24px; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s; }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
+        .btn-secondary { background: white; color: #374151; padding: 10px 24px; border-radius: 8px; font-weight: 600; border: 1px solid #d1d5db; cursor: pointer; transition: all 0.2s; }
+        .btn-secondary:hover { background: #f9fafb; border-color: #9ca3af; }
+        .nav-tab { padding: 12px 20px; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-weight: 500; }
+        .nav-tab.active { background-color: #eff6ff; color: #3b82f6; }
+        .nav-tab:hover:not(.active) { background-color: #f9fafb; }
+        .input-field { border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 16px; width: 100%; transition: all 0.2s; }
+        .input-field:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+        .logo { font-weight: 700; font-size: 1.5rem; background: linear-gradient(90deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
+    <!-- SIMPLIFIQUEI MUITO PARA TESTE - Vamos fazer funcionar primeiro -->
     <div class="min-h-screen">
         <!-- Header -->
         <header class="bg-white shadow-sm border-b">
@@ -122,7 +52,7 @@
         <!-- Main Container -->
         <div class="container mx-auto px-4 py-8">
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                <!-- Sidebar Simplificada -->
+                <!-- Sidebar -->
                 <div class="lg:col-span-1">
                     <div class="card bg-white p-6 mb-6">
                         <h3 class="font-bold text-lg mb-4">Navegação</h3>
@@ -137,34 +67,6 @@
                                 <i class="fas fa-hand-holding-usd mr-3"></i> Depósito
                             </div>
                         </div>
-                        
-                        <div class="mt-8 pt-6 border-t">
-                            <h3 class="font-bold text-lg mb-4">Status</h3>
-                            <div class="space-y-3">
-                                <div class="flex justify-between">
-                                    <span class="text-gray-600">Protocolo PoE</span>
-                                    <span class="text-green-600 font-medium">● Ativo</span>
-                                </div>
-                                <div class="text-sm text-gray-500">
-                                    v0.1 • ledger local • SHA-512 determinístico
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Info Box -->
-                    <div class="card bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200 p-5">
-                        <div class="flex items-start">
-                            <i class="fas fa-info-circle text-blue-500 text-xl mr-3 mt-1"></i>
-                            <div>
-                                <h4 class="font-bold text-blue-800 mb-2">Como funciona v0.1</h4>
-                                <p class="text-blue-700 text-sm">
-                                    Registros determinísticos locais. 
-                                    Cada evento = 1 crédito consumido.
-                                    <strong>Ledger imutável</strong> no localStorage.
-                                </p>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -174,178 +76,38 @@
                     <div id="dashboard-tab" class="tab-content fade-in">
                         <div class="mb-8">
                             <h1 class="text-3xl font-bold text-gray-900">Dashboard PoE v0.1</h1>
-                            <p class="text-gray-600">Registro determinístico local - Sem backend requerido</p>
+                            <p class="text-gray-600">Registro determinístico local</p>
                         </div>
                         
-                        <!-- Stats Cards Simplificadas -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                             <div class="card bg-white p-6">
-                                <div class="flex justify-between items-start">
-                                    <div>
-                                        <p class="text-gray-500 text-sm">Créditos Disponíveis</p>
-                                        <p class="text-3xl font-bold mt-2" id="credits-count">0</p>
-                                        <p class="text-gray-500 text-sm mt-1">(depósitos - eventos)</p>
-                                    </div>
-                                    <div class="bg-blue-100 p-3 rounded-full">
-                                        <i class="fas fa-coins text-blue-600 text-xl"></i>
-                                    </div>
-                                </div>
-                                <div class="mt-4">
-                                    <button class="btn-primary w-full" onclick="showTab('deposit')">
-                                        <i class="fas fa-plus mr-2"></i> Registrar Depósito
-                                    </button>
-                                </div>
+                                <p class="text-gray-500 text-sm">Créditos Disponíveis</p>
+                                <p class="text-3xl font-bold mt-2" id="credits-count">0</p>
                             </div>
                             
                             <div class="card bg-white p-6">
-                                <div class="flex justify-between items-start">
-                                    <div>
-                                        <p class="text-gray-500 text-sm">Eventos Registrados</p>
-                                        <p class="text-3xl font-bold mt-2" id="events-count">0</p>
-                                        <p class="text-gray-500 text-sm mt-1">no ledger local</p>
-                                    </div>
-                                    <div class="bg-green-100 p-3 rounded-full">
-                                        <i class="fas fa-check-circle text-green-600 text-xl"></i>
-                                    </div>
-                                </div>
-                                <div class="mt-4">
-                                    <button class="btn-secondary w-full" onclick="showTab('register')">
-                                        <i class="fas fa-certificate mr-2"></i> Registrar Evento
-                                    </button>
-                                </div>
+                                <p class="text-gray-500 text-sm">Eventos Registrados</p>
+                                <p class="text-3xl font-bold mt-2" id="events-count">0</p>
                             </div>
                         </div>
                         
-                        <!-- Atividade Recente -->
                         <div class="card bg-white p-6">
-                            <h2 class="text-xl font-bold mb-4">Atividade Recente no Ledger</h2>
-                            <div class="overflow-x-auto">
-                                <table class="w-full">
-                                    <thead>
-                                        <tr class="border-b">
-                                            <th class="text-left py-3 text-gray-600">Data</th>
-                                            <th class="text-left py-3 text-gray-600">Tipo</th>
-                                            <th class="text-left py-3 text-gray-600">Hash/Valor</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="recent-activity">
-                                        <tr id="no-recent-activity">
-                                            <td colspan="3" class="py-8 text-center text-gray-500">
-                                                <i class="fas fa-inbox text-3xl mb-2"></i>
-                                                <p>Ledger vazio</p>
-                                                <button class="btn-secondary mt-4" onclick="showTab('register')">
-                                                    Registrar primeiro evento
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="mt-4 text-sm text-gray-500">
-                                <i class="fas fa-database mr-2"></i>
-                                Ledger armazenado localmente (determinístico)
-                            </div>
+                            <h2 class="text-xl font-bold mb-4">Status</h2>
+                            <p class="text-gray-600">Sistema funcionando corretamente</p>
+                            <button onclick="testLedger()" class="btn-primary mt-4">Testar Ledger</button>
                         </div>
                     </div>
                     
                     <!-- Register Event Tab -->
                     <div id="register-tab" class="tab-content fade-in" style="display: none;">
                         <div class="mb-8">
-                            <h1 class="text-3xl font-bold text-gray-900">Registrar Evento PoE</h1>
-                            <p class="text-gray-600">Timestamp canônico determinístico local</p>
+                            <h1 class="text-3xl font-bold text-gray-900">Registrar Evento</h1>
                         </div>
                         
-                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                            <div class="lg:col-span-2">
-                                <div class="card bg-white p-6">
-                                    <h2 class="text-xl font-bold mb-6">Registro Determinístico</h2>
-                                    
-                                    <div class="mb-6">
-                                        <label class="block text-gray-700 mb-2">Hash do Evento (SHA-512)</label>
-                                        <input type="text" id="event-hash" class="input-field" placeholder="128 caracteres hexadecimais" maxlength="128">
-                                        <p class="text-gray-500 text-sm mt-2">Hash do evento já validado externamente</p>
-                                    </div>
-                                    
-                                    <div class="mb-6">
-                                        <label class="block text-gray-700 mb-2">Metadados (Opcional)</label>
-                                        <textarea id="event-metadata" class="input-field h-32" placeholder='{"tipo": "contrato", "orgao": "receita"}'></textarea>
-                                        <p class="text-gray-500 text-sm mt-2">JSON opcional para contextualização</p>
-                                    </div>
-                                    
-                                    <div class="flex justify-between items-center">
-                                        <div>
-                                            <p class="text-gray-600">Custo: <span class="font-bold">1 crédito</span></p>
-                                            <p class="text-gray-500 text-sm">Disponíveis: <span id="available-credits">0</span></p>
-                                        </div>
-                                        <button class="btn-primary" onclick="registerEvent()">
-                                            <i class="fas fa-certificate mr-2"></i> Registrar no Ledger Local
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <div class="card bg-white p-6 mb-6">
-                                    <h3 class="font-bold text-lg mb-4">Características PoE v0.1</h3>
-                                    <ul class="space-y-3 text-gray-700">
-                                        <li class="flex items-start">
-                                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                                            <span>Timestamp determinístico (ISO 8601)</span>
-                                        </li>
-                                        <li class="flex items-start">
-                                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                                            <span>Prova = SHA-512(hash + timestamp)</span>
-                                        </li>
-                                        <li class="flex items-start">
-                                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                                            <span>Ledger append-only no localStorage</span>
-                                        </li>
-                                        <li class="flex items-start">
-                                            <i class="fas fa-exclamation-triangle text-amber-500 mt-1 mr-2"></i>
-                                            <span>Não valida, apenas testemunha</span>
-                                        </li>
-                                    </ul>
-                                </div>
-                                
-                                <div class="card bg-white p-6">
-                                    <h3 class="font-bold text-lg mb-4">Recibo PoE</h3>
-                                    <div id="certification-result" class="hidden">
-                                        <div class="p-4 bg-green-50 border border-green-200 rounded-lg mb-4">
-                                            <div class="flex items-center text-green-800">
-                                                <i class="fas fa-check-circle text-xl mr-3"></i>
-                                                <div>
-                                                    <p class="font-bold">Evento Registrado!</p>
-                                                    <p class="text-sm">Timestamp canônico gerado</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="space-y-3">
-                                            <div>
-                                                <p class="text-gray-600 text-sm">PoE Proof:</p>
-                                                <p class="font-mono text-sm bg-gray-100 p-2 rounded break-all" id="result-proof"></p>
-                                            </div>
-                                            <div>
-                                                <p class="text-gray-600 text-sm">Timestamp:</p>
-                                                <p class="font-medium" id="result-timestamp"></p>
-                                            </div>
-                                            <div>
-                                                <p class="text-gray-600 text-sm">Tipo:</p>
-                                                <p class="font-medium">Registro determinístico local</p>
-                                            </div>
-                                        </div>
-                                        
-                                        <button class="btn-secondary w-full mt-4" onclick="copyResult()">
-                                            <i class="fas fa-copy mr-2"></i> Copiar Recibo PoE
-                                        </button>
-                                    </div>
-                                    
-                                    <div id="certification-pending" class="text-center py-8">
-                                        <i class="fas fa-file-certificate text-4xl text-gray-300 mb-4"></i>
-                                        <p class="text-gray-500">Recibo aparecerá aqui após registro</p>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="card bg-white p-6">
+                            <input type="text" id="event-hash" class="input-field mb-4" placeholder="Hash SHA-512">
+                            <textarea id="event-metadata" class="input-field h-32 mb-4" placeholder='Metadados JSON'></textarea>
+                            <button onclick="registerEvent()" class="btn-primary">Registrar Evento</button>
                         </div>
                     </div>
                     
@@ -353,544 +115,253 @@
                     <div id="deposit-tab" class="tab-content fade-in" style="display: none;">
                         <div class="mb-8">
                             <h1 class="text-3xl font-bold text-gray-900">Registrar Depósito</h1>
-                            <p class="text-gray-600">Registro PoE de entrada de créditos (sem backend)</p>
                         </div>
                         
-                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                            <div class="lg:col-span-2">
-                                <div class="card bg-white p-6">
-                                    <h2 class="text-xl font-bold mb-6">Depósito Externo PoE</h2>
-                                    
-                                    <div class="mb-6">
-                                        <label class="block text-gray-700 mb-2">Hash do Comprovante (SHA-512)</label>
-                                        <input type="text" id="deposit-hash" class="input-field" placeholder="Hash do comprovante de transferência" maxlength="128">
-                                        <p class="text-gray-500 text-sm mt-2">Hash do comprovante bancário/PIX</p>
-                                    </div>
-                                    
-                                    <div class="mb-6">
-                                        <label class="block text-gray-700 mb-2">Valor em Créditos</label>
-                                        <input type="number" id="deposit-amount" class="input-field" placeholder="100" min="1" max="1000000">
-                                        <p class="text-gray-500 text-sm mt-2">1 crédito = direito a 1 registro de evento</p>
-                                    </div>
-                                    
-                                    <div class="mb-6">
-                                        <label class="block text-gray-700 mb-2">Metadados do Depósito</label>
-                                        <textarea id="deposit-metadata" class="input-field h-32" placeholder='{"tipo": "pix", "banco": "000", "data_externa": "2024-01-15"}'></textarea>
-                                        <p class="text-gray-500 text-sm mt-2">Contexto opcional para auditoria</p>
-                                    </div>
-                                    
-                                    <div class="flex justify-between items-center">
-                                        <div class="text-gray-600">
-                                            <p><i class="fas fa-info-circle mr-2"></i>Registro local determinístico</p>
-                                        </div>
-                                        <button class="btn-primary" onclick="registerDeposit()">
-                                            <i class="fas fa-hand-holding-usd mr-2"></i> Registrar Depósito PoE
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <div class="card bg-white p-6 mb-6">
-                                    <h3 class="font-bold text-lg mb-4">Como funciona</h3>
-                                    <ul class="space-y-3 text-gray-700">
-                                        <li class="flex items-start">
-                                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                                            <span>Registro de comprovante externo</span>
-                                        </li>
-                                        <li class="flex items-start">
-                                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                                            <span>Créditos adicionados ao ledger local</span>
-                                        </li>
-                                        <li class="flex items-start">
-                                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
-                                            <span>Transação real ocorre fora do PoE</span>
-                                        </li>
-                                        <li class="flex items-start">
-                                            <i class="fas fa-exclamation-triangle text-amber-500 mt-1 mr-2"></i>
-                                            <span>PoE apenas testemunha o depósito</span>
-                                        </li>
-                                    </ul>
-                                </div>
-                                
-                                <div class="card bg-white p-6">
-                                    <h3 class="font-bold text-lg mb-4">Histórico de Depósitos</h3>
-                                    <div id="deposit-history" class="space-y-3">
-                                        <div class="text-center py-8 text-gray-400">
-                                            <i class="fas fa-piggy-bank text-3xl mb-4"></i>
-                                            <p>Nenhum depósito registrado</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="card bg-white p-6">
+                            <input type="text" id="deposit-hash" class="input-field mb-4" placeholder="Hash do comprovante">
+                            <input type="number" id="deposit-amount" class="input-field mb-4" placeholder="Quantidade">
+                            <textarea id="deposit-metadata" class="input-field h-32 mb-4" placeholder='Metadados'></textarea>
+                            <button onclick="registerDeposit()" class="btn-primary">Registrar Depósito</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Footer -->
-        <footer class="bg-white border-t mt-12">
-            <div class="container mx-auto px-4 py-8">
-                <div class="flex flex-col md:flex-row justify-between items-center">
-                    <div class="mb-4 md:mb-0">
-                        <div class="logo mb-2">Proof of Event</div>
-                        <p class="text-gray-600 text-sm">Protocolo v0.1 • "A blockchain não decide. Ela testemunha."</p>
-                    </div>
-                    <div class="flex space-x-6">
-                        <button onclick="exportLedger()" class="text-gray-600 hover:text-blue-600">Exportar Ledger</button>
-                        <button onclick="clearLocalData()" class="text-gray-600 hover:text-red-600">Limpar Dados</button>
-                    </div>
-                </div>
-                <div class="text-center text-gray-500 text-sm mt-8 pt-6 border-t">
-                    © 2024 Proof of Event. Protocolo técnico determinístico local v0.1. Sem backend requerido.
-                </div>
-            </div>
-        </footer>
     </div>
 
-    <!-- JavaScript 100% PoE - SEM BACKEND FICTÍCIO -->
+    <!-- JavaScript SIMPLIFICADO - Vamos fazer funcionar primeiro -->
     <script>
-        // ==============================================
-        // LEDGER PoE v0.1 - ARMAZENAMENTO LOCAL DETERMINÍSTICO
-        // ==============================================
+        console.log("DEBUG: Script carregando...");
         
-        // Chaves para localStorage
+        // ==============================================
+        // LEDGER BÁSICO
+        // ==============================================
         const LEDGER_KEY = 'poe_ledger_v1';
-        const USER_KEY = 'poe_user_v1';
-        
-        // Estado do ledger local
         let ledger = [];
-        let userState = {
-            name: 'Usuário PoE',
-            email: 'local@poe.protocol',
-            lastSync: new Date().toISOString()
-        };
         
-        // ==============================================
-        // FUNÇÕES DO LEDGER
-        // ==============================================
-        
-        // Carregar ledger do localStorage
+        // Carregar ledger
         function loadLedger() {
             try {
+                console.log("DEBUG: Carregando ledger...");
                 const saved = localStorage.getItem(LEDGER_KEY);
-                if (saved) {
-                    ledger = JSON.parse(saved);
-                } else {
-                    ledger = [];
-                    saveLedger();
-                }
+                ledger = saved ? JSON.parse(saved) : [];
+                console.log("DEBUG: Ledger carregado com", ledger.length, "registros");
             } catch (e) {
-                console.error('Erro ao carregar ledger:', e);
+                console.error("DEBUG: Erro ao carregar ledger:", e);
                 ledger = [];
             }
         }
         
-        // Salvar ledger no localStorage
+        // Salvar ledger
         function saveLedger() {
             try {
                 localStorage.setItem(LEDGER_KEY, JSON.stringify(ledger));
+                console.log("DEBUG: Ledger salvo");
             } catch (e) {
-                console.error('Erro ao salvar ledger:', e);
-            }
-        }
-        
-        // Carregar estado do usuário
-        function loadUserState() {
-            try {
-                const saved = localStorage.getItem(USER_KEY);
-                if (saved) {
-                    userState = JSON.parse(saved);
-                }
-            } catch (e) {
-                console.error('Erro ao carregar usuário:', e);
-            }
-        }
-        
-        // Salvar estado do usuário
-        function saveUserState() {
-            try {
-                localStorage.setItem(USER_KEY, JSON.stringify(userState));
-            } catch (e) {
-                console.error('Erro ao salvar usuário:', e);
+                console.error("DEBUG: Erro ao salvar ledger:", e);
             }
         }
         
         // ==============================================
-        // CÁLCULOS DETERMINÍSTICOS
+        // FUNÇÕES BÁSICAS
         // ==============================================
         
-        // Calcular créditos disponíveis (depósitos - eventos)
+        // Gerar hash simples
+        async function generateSHA512Hash(input) {
+            // Simplificado para testes
+            const encoder = new TextEncoder();
+            const data = encoder.encode(input);
+            const hashArray = Array.from(data)
+                .map(byte => byte.toString(16).padStart(2, '0'))
+                .slice(0, 10);
+            return hashArray.join('').padEnd(128, '0').slice(0, 128);
+        }
+        
+        // Calcular créditos
         function calculateAvailableCredits() {
             const deposits = ledger.filter(item => item.type === 'deposit')
                                  .reduce((sum, item) => sum + (item.amount || 0), 0);
-            
             const events = ledger.filter(item => item.type === 'event').length;
-            
             return Math.max(0, deposits - events);
         }
         
-        // Calcular total de eventos
+        // Calcular eventos
         function calculateTotalEvents() {
             return ledger.filter(item => item.type === 'event').length;
         }
         
-        // Calcular total de depósitos
-        function calculateTotalDeposits() {
-            return ledger.filter(item => item.type === 'deposit')
-                        .reduce((sum, item) => sum + (item.amount || 0), 0);
-        }
-        
         // ==============================================
-        // FUNÇÕES PRINCIPAIS PoE
+        // UI FUNCTIONS
         // ==============================================
         
-        // Gerar hash SHA-512 (simplificado para demo)
-        async function generateSHA512Hash(input) {
-            // Em produção real, usar Web Crypto API
-            // Para demo, usamos uma função simplificada
-            const encoder = new TextEncoder();
-            const data = encoder.encode(input);
-            
-            // Simulação - em produção usar: crypto.subtle.digest('SHA-512', data)
-            const hashArray = Array.from(data)
-                .map(byte => byte.toString(16).padStart(2, '0'))
-                .slice(0, 64); // Aproximação para demo
-            
-            return hashArray.join('').padEnd(128, '0').slice(0, 128);
-        }
-        
-        // Registrar evento no ledger local
-        async function registerEvent() {
-            const hashInput = document.getElementById('event-hash');
-            const hash = hashInput.value.trim();
-            const metadataInput = document.getElementById('event-metadata');
-            const metadataText = metadataInput.value.trim();
-            
-            // Validação básica
-            if (hash.length !== 128 || !/^[0-9a-f]+$/i.test(hash)) {
-                alert('Hash inválido. Para v0.1, use 128 caracteres hexadecimais.');
-                return;
-            }
-            
-            // Verificar créditos
-            const availableCredits = calculateAvailableCredits();
-            if (availableCredits <= 0) {
-                alert('Créditos insuficientes. Registre um depósito primeiro.');
-                showTab('deposit');
-                return;
-            }
-            
-            try {
-                // Gerar timestamp ISO 8601
-                const timestamp = new Date().toISOString();
-                
-                // Gerar prova PoE (hash do hash + timestamp)
-                const proofInput = hash + timestamp;
-                const poeProof = await generateSHA512Hash(proofInput);
-                
-                // Criar registro no ledger
-                const eventRecord = {
-                    type: 'event',
-                    id: `event_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-                    hash: hash,
-                    timestamp: timestamp,
-                    poeProof: poeProof,
-                    metadata: metadataText ? JSON.parse(metadataText) : null,
-                    createdAt: new Date().toISOString()
-                };
-                
-                // Adicionar ao ledger
-                ledger.push(eventRecord);
-                saveLedger();
-                
-                // Mostrar recibo
-                document.getElementById('certification-pending').style.display = 'none';
-                document.getElementById('certification-result').style.display = 'block';
-                document.getElementById('result-proof').textContent = poeProof;
-                document.getElementById('result-timestamp').textContent = timestamp;
-                
-                // Limpar campos
-                hashInput.value = '';
-                metadataInput.value = '';
-                
-                // Atualizar dashboard
-                updateDashboard();
-                
-                // Feedback
-                console.log('Evento registrado no ledger local:', eventRecord);
-                
-            } catch (error) {
-                console.error('Erro ao registrar evento:', error);
-                alert('Erro no registro. Verifique os dados.');
-            }
-        }
-        
-        // Registrar depósito
-        async function registerDeposit() {
-            const hashInput = document.getElementById('deposit-hash');
-            const hash = hashInput.value.trim();
-            const amountInput = document.getElementById('deposit-amount');
-            const amount = parseInt(amountInput.value);
-            const metadataInput = document.getElementById('deposit-metadata');
-            const metadataText = metadataInput.value.trim();
-            
-            // Validações
-            if (!hash || hash.length < 10) {
-                alert('Informe um hash válido do comprovante.');
-                return;
-            }
-            
-            if (!amount || amount < 1 || amount > 1000000) {
-                alert('Informe uma quantidade válida de créditos (1-1.000.000).');
-                return;
-            }
-            
-            try {
-                // Gerar timestamp
-                const timestamp = new Date().toISOString();
-                
-                // Gerar prova do depósito
-                const proofInput = hash + timestamp + amount;
-                const poeProof = await generateSHA512Hash(proofInput);
-                
-                // Criar registro de depósito
-                const depositRecord = {
-                    type: 'deposit',
-                    id: `deposit_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-                    hash: hash,
-                    amount: amount,
-                    timestamp: timestamp,
-                    poeProof: poeProof,
-                    metadata: metadataText ? JSON.parse(metadataText) : null,
-                    createdAt: new Date().toISOString()
-                };
-                
-                // Adicionar ao ledger
-                ledger.push(depositRecord);
-                saveLedger();
-                
-                // Limpar campos
-                hashInput.value = '';
-                amountInput.value = '';
-                metadataInput.value = '';
-                
-                // Atualizar dashboard
-                updateDashboard();
-                updateDepositHistory();
-                
-                // Feedback
-                alert(`Depósito de ${amount} créditos registrado no ledger local!`);
-                console.log('Depósito registrado:', depositRecord);
-                
-            } catch (error) {
-                console.error('Erro ao registrar depósito:', error);
-                alert('Erro no registro do depósito.');
-            }
-        }
-        
-        // ==============================================
-        // ATUALIZAÇÃO DA UI
-        // ==============================================
-        
-        // Atualizar dashboard
-        function updateDashboard() {
-            const credits = calculateAvailableCredits();
-            const events = calculateTotalEvents();
-            
-            document.getElementById('credits-count').textContent = credits;
-            document.getElementById('events-count').textContent = events;
-            document.getElementById('available-credits').textContent = credits;
-            
-            updateRecentActivity();
-        }
-        
-        // Atualizar atividade recente
-        function updateRecentActivity() {
-            const tbody = document.getElementById('recent-activity');
-            const noActivityRow = document.getElementById('no-recent-activity');
-            
-            // Ordenar por data (mais recente primeiro)
-            const recentItems = [...ledger]
-                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-                .slice(0, 10);
-            
-            if (recentItems.length === 0) {
-                noActivityRow.style.display = 'table-row';
-                return;
-            }
-            
-            noActivityRow.style.display = 'none';
-            tbody.innerHTML = '';
-            
-            recentItems.forEach(item => {
-                const row = document.createElement('tr');
-                row.className = 'border-b hover:bg-gray-50';
-                
-                const date = new Date(item.createdAt).toLocaleDateString('pt-BR');
-                const typeBadge = item.type === 'event' 
-                    ? '<span class="px-2 py-1 bg-green-100 text-green-800 rounded text-xs">Evento</span>'
-                    : '<span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">Depósito</span>';
-                
-                const hashDisplay = item.hash 
-                    ? item.hash.substring(0, 16) + '...' 
-                    : (item.amount ? `+${item.amount} créditos` : '');
-                
-                row.innerHTML = `
-                    <td class="py-3 text-sm">${date}</td>
-                    <td class="py-3">${typeBadge}</td>
-                    <td class="py-3 font-mono text-xs">${hashDisplay}</td>
-                `;
-                
-                tbody.appendChild(row);
-            });
-        }
-        
-        // Atualizar histórico de depósitos
-        function updateDepositHistory() {
-            const container = document.getElementById('deposit-history');
-            const deposits = ledger.filter(item => item.type === 'deposit')
-                                 .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-            
-            if (deposits.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-8 text-gray-400">
-                        <i class="fas fa-piggy-bank text-3xl mb-4"></i>
-                        <p>Nenhum depósito registrado</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            container.innerHTML = '';
-            
-            deposits.forEach(deposit => {
-                const depositDiv = document.createElement('div');
-                depositDiv.className = 'border rounded-lg p-3';
-                
-                const date = new Date(deposit.createdAt).toLocaleDateString('pt-BR');
-                const hashShort = deposit.hash.substring(0, 12) + '...';
-                
-                depositDiv.innerHTML = `
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <p class="font-medium">${deposit.amount} créditos</p>
-                            <p class="text-gray-500 text-sm">${date}</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-xs font-mono">${hashShort}</p>
-                            <p class="text-green-600 text-sm">Registrado</p>
-                        </div>
-                    </div>
-                `;
-                
-                container.appendChild(depositDiv);
-            });
-        }
-        
-        // ==============================================
-        // FUNÇÕES UTILITÁRIAS
-        // ==============================================
-        
-        // Copiar resultado
-        function copyResult() {
-            const proof = document.getElementById('result-proof').textContent;
-            const timestamp = document.getElementById('result-timestamp').textContent;
-            
-            const receipt = {
-                protocol: 'PoE v0.1',
-                poe_proof: proof,
-                timestamp: timestamp,
-                type: 'event_registration',
-                storage: 'local_ledger',
-                version: '0.1'
-            };
-            
-            navigator.clipboard.writeText(JSON.stringify(receipt, null, 2))
-                .then(() => alert('Recibo PoE copiado!'));
-        }
-        
-        // Exportar ledger
-        function exportLedger() {
-            const exportData = {
-                protocol: 'PoE v0.1',
-                ledger: ledger,
-                summary: {
-                    totalEvents: calculateTotalEvents(),
-                    totalDeposits: calculateTotalDeposits(),
-                    availableCredits: calculateAvailableCredits(),
-                    exportDate: new Date().toISOString()
-                }
-            };
-            
-            const dataStr = JSON.stringify(exportData, null, 2);
-            const dataBlob = new Blob([dataStr], { type: 'application/json' });
-            
-            const url = URL.createObjectURL(dataBlob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `poe_ledger_${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-        
-        // Limpar dados locais (apenas para desenvolvimento)
-        function clearLocalData() {
-            if (confirm('Tem certeza? Isso apagará todo o ledger local.')) {
-                localStorage.removeItem(LEDGER_KEY);
-                localStorage.removeItem(USER_KEY);
-                ledger = [];
-                updateDashboard();
-                alert('Ledger local apagado.');
-                location.reload();
-            }
-        }
-        
-        // Navegação entre tabs
+        // Mostrar tab
         function showTab(tabName) {
+            console.log("DEBUG: Mostrando tab", tabName);
+            
+            // Esconde todas as tabs
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.style.display = 'none';
             });
             
+            // Remove classe active
             document.querySelectorAll('.nav-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
             
-            document.getElementById(`${tabName}-tab`).style.display = 'block';
+            // Mostra tab selecionada
+            const tabElement = document.getElementById(`${tabName}-tab`);
+            if (tabElement) {
+                tabElement.style.display = 'block';
+            } else {
+                console.error("DEBUG: Tab não encontrada:", tabName);
+            }
             
+            // Ativa navegação
             document.querySelectorAll('.nav-tab').forEach(tab => {
                 if (tab.textContent.includes(tabName.charAt(0).toUpperCase() + tabName.slice(1))) {
                     tab.classList.add('active');
                 }
             });
             
-            // Atualizar dados específicos da tab
-            if (tabName === 'deposit') {
-                updateDepositHistory();
+            updateDashboard();
+        }
+        
+        // Atualizar dashboard
+        function updateDashboard() {
+            console.log("DEBUG: Atualizando dashboard...");
+            const credits = calculateAvailableCredits();
+            const events = calculateTotalEvents();
+            
+            const creditsElement = document.getElementById('credits-count');
+            const eventsElement = document.getElementById('events-count');
+            
+            if (creditsElement) creditsElement.textContent = credits;
+            if (eventsElement) eventsElement.textContent = events;
+            
+            console.log("DEBUG: Dashboard atualizado - créditos:", credits, "eventos:", events);
+        }
+        
+        // Registrar evento
+        async function registerEvent() {
+            console.log("DEBUG: Registrando evento...");
+            const hashInput = document.getElementById('event-hash');
+            const hash = hashInput.value.trim();
+            
+            if (!hash) {
+                alert("Digite um hash");
+                return;
             }
+            
+            const availableCredits = calculateAvailableCredits();
+            if (availableCredits <= 0) {
+                alert("Créditos insuficientes");
+                return;
+            }
+            
+            try {
+                const timestamp = new Date().toISOString();
+                const proofInput = hash + timestamp;
+                const poeProof = await generateSHA512Hash(proofInput);
+                
+                const eventRecord = {
+                    type: 'event',
+                    id: `event_${Date.now()}`,
+                    hash: hash,
+                    timestamp: timestamp,
+                    poeProof: poeProof,
+                    createdAt: new Date().toISOString()
+                };
+                
+                ledger.push(eventRecord);
+                saveLedger();
+                updateDashboard();
+                
+                hashInput.value = '';
+                alert("Evento registrado!");
+                console.log("DEBUG: Evento registrado com sucesso");
+                
+            } catch (error) {
+                console.error("DEBUG: Erro ao registrar evento:", error);
+                alert("Erro: " + error.message);
+            }
+        }
+        
+        // Registrar depósito
+        async function registerDeposit() {
+            console.log("DEBUG: Registrando depósito...");
+            const hashInput = document.getElementById('deposit-hash');
+            const amountInput = document.getElementById('deposit-amount');
+            
+            const hash = hashInput.value.trim();
+            const amount = parseInt(amountInput.value);
+            
+            if (!hash || !amount || amount < 1) {
+                alert("Preencha todos os campos corretamente");
+                return;
+            }
+            
+            try {
+                const timestamp = new Date().toISOString();
+                const proofInput = hash + timestamp + amount;
+                const poeProof = await generateSHA512Hash(proofInput);
+                
+                const depositRecord = {
+                    type: 'deposit',
+                    id: `deposit_${Date.now()}`,
+                    hash: hash,
+                    amount: amount,
+                    timestamp: timestamp,
+                    poeProof: poeProof,
+                    createdAt: new Date().toISOString()
+                };
+                
+                ledger.push(depositRecord);
+                saveLedger();
+                updateDashboard();
+                
+                hashInput.value = '';
+                amountInput.value = '';
+                alert(`Depósito de ${amount} créditos registrado!`);
+                console.log("DEBUG: Depósito registrado com sucesso");
+                
+            } catch (error) {
+                console.error("DEBUG: Erro ao registrar depósito:", error);
+                alert("Erro: " + error.message);
+            }
+        }
+        
+        // Testar ledger
+        function testLedger() {
+            console.log("DEBUG: Testando ledger...");
+            console.log("Ledger atual:", ledger);
+            console.log("LocalStorage:", localStorage.getItem(LEDGER_KEY));
+            console.log("Créditos:", calculateAvailableCredits());
+            console.log("Eventos:", calculateTotalEvents());
+            alert("Verifique o console (F12)");
         }
         
         // ==============================================
         // INICIALIZAÇÃO
         // ==============================================
-        
         document.addEventListener('DOMContentLoaded', function() {
-            // Carregar dados
-            loadLedger();
-            loadUserState();
+            console.log("DEBUG: DOM carregado, inicializando...");
             
-            // Inicializar UI
-            updateDashboard();
-            updateDepositHistory();
-            
-            // Verificar se é a primeira execução
-            if (ledger.length === 0) {
-                console.log('PoE v0.1 inicializado - Ledger local vazio');
-            } else {
-                console.log(`PoE v0.1 carregado - ${ledger.length} registros no ledger`);
+            try {
+                // Carregar dados
+                loadLedger();
+                
+                // Atualizar UI
+                updateDashboard();
+                
+                // Mostrar dashboard inicial
+                showTab('dashboard');
+                
+                console.log("DEBUG: Sistema inicializado com sucesso!");
+                console.log("Ledger inicial:", ledger);
+                
+            } catch (error) {
+                console.error("DEBUG: Erro na inicialização:", error);
+                alert("Erro ao inicializar: " + error.message);
             }
         });
     </script>
