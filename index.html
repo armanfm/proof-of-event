@@ -1,368 +1,360 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proof of Event (PoE) - Plataforma</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>🔐 Proof of Event (PoE) - Portal Unificado</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; }
-        .fade-in { animation: fadeIn 0.3s ease-in; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .card { border: 1px solid #e5e7eb; border-radius: 12px; transition: all 0.2s ease; }
-        .card:hover { box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); transform: translateY(-2px); }
-        .btn-primary { background: linear-gradient(90deg, #3b82f6, #8b5cf6); color: white; padding: 10px 24px; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s; }
-        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
-        .btn-secondary { background: white; color: #374151; padding: 10px 24px; border-radius: 8px; font-weight: 600; border: 1px solid #d1d5db; cursor: pointer; transition: all 0.2s; }
-        .btn-secondary:hover { background: #f9fafb; border-color: #9ca3af; }
-        .nav-tab { padding: 12px 20px; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-weight: 500; }
-        .nav-tab.active { background-color: #eff6ff; color: #3b82f6; }
-        .nav-tab:hover:not(.active) { background-color: #f9fafb; }
-        .input-field { border: 1px solid #d1d5db; border-radius: 8px; padding: 12px 16px; width: 100%; transition: all 0.2s; }
-        .input-field:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
-        .logo { font-weight: 700; font-size: 1.5rem; background: linear-gradient(90deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(25, 35, 45, 0.9);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+        
+        header {
+            padding: 25px;
+            text-align: center;
+            border-bottom: 1px solid #2c5364;
+            background: rgba(15, 25, 35, 0.9);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a0c8e0;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+        
+        .tabs-container {
+            display: flex;
+            background: rgba(20, 30, 40, 0.9);
+            border-bottom: 1px solid #2c5364;
+            overflow-x: auto;
+        }
+        
+        .tab {
+            padding: 18px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            color: #a0c8e0;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .tab:hover {
+            background: rgba(44, 83, 100, 0.3);
+            color: #4facfe;
+        }
+        
+        .tab.active {
+            background: rgba(44, 83, 100, 0.7);
+            color: white;
+            border-bottom: 3px solid #00f2fe;
+        }
+        
+        .tab-icon {
+            font-size: 1.3rem;
+        }
+        
+        .content-container {
+            padding: 0;
+            height: calc(100vh - 220px);
+            min-height: 600px;
+            position: relative;
+        }
+        
+        .tab-content {
+            display: none;
+            height: 100%;
+            width: 100%;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background-color: white;
+        }
+        
+        .iframe-placeholder {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            text-align: center;
+            background: rgba(30, 40, 50, 0.7);
+        }
+        
+        .iframe-placeholder h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #4facfe;
+        }
+        
+        .iframe-placeholder p {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            max-width: 700px;
+            line-height: 1.6;
+        }
+        
+        .direct-link {
+            display: inline-block;
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-top: 15px;
+        }
+        
+        .direct-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+        }
+        
+        .status-info {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(20, 30, 40, 0.9);
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            border-left: 4px solid #4facfe;
+            max-width: 300px;
+        }
+        
+        .footer {
+            padding: 20px;
+            text-align: center;
+            color: #a0c8e0;
+            font-size: 0.9rem;
+            border-top: 1px solid #2c5364;
+            background: rgba(15, 25, 35, 0.9);
+        }
+        
+        @media (max-width: 768px) {
+            .tabs-container {
+                flex-direction: column;
+            }
+            
+            .tab {
+                padding: 15px;
+                justify-content: center;
+            }
+            
+            .content-container {
+                height: calc(100vh - 280px);
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .status-info {
+                position: relative;
+                top: 0;
+                right: 0;
+                margin: 20px auto;
+                max-width: 100%;
+            }
+        }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
-    <!-- SIMPLIFIQUEI MUITO PARA TESTE - Vamos fazer funcionar primeiro -->
-    <div class="min-h-screen">
-        <!-- Header -->
-        <header class="bg-white shadow-sm border-b">
-            <div class="container mx-auto px-4 py-4">
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center space-x-3">
-                        <div class="logo">Proof of Event</div>
-                        <span class="text-sm text-gray-500">v0.1</span>
-                    </div>
-                    <div class="flex items-center space-x-4">
-                        <div class="text-right">
-                            <div class="font-medium" id="company-name">PoE Protocol</div>
-                            <div class="text-sm text-gray-500" id="company-email">Ledger local determinístico</div>
-                        </div>
-                        <div id="user-avatar" class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold">
-                            P
-                        </div>
-                    </div>
-                </div>
-            </div>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔐 Proof of Event (PoE)</h1>
+            <p class="subtitle">Protocolo determinístico para registrar eventos externos como fatos criptográficos ancorados no tempo. A blockchain não decide. Ela testemunha.</p>
         </header>
-
-        <!-- Main Container -->
-        <div class="container mx-auto px-4 py-8">
-            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                <!-- Sidebar -->
-                <div class="lg:col-span-1">
-                    <div class="card bg-white p-6 mb-6">
-                        <h3 class="font-bold text-lg mb-4">Navegação</h3>
-                        <div class="space-y-2">
-                            <div class="nav-tab active" onclick="showTab('dashboard')">
-                                <i class="fas fa-chart-bar mr-3"></i> Dashboard
-                            </div>
-                            <div class="nav-tab" onclick="showTab('register')">
-                                <i class="fas fa-plus-circle mr-3"></i> Registrar Evento
-                            </div>
-                            <div class="nav-tab" onclick="showTab('deposit')">
-                                <i class="fas fa-hand-holding-usd mr-3"></i> Depósito
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Main Content -->
-                <div class="lg:col-span-3">
-                    <!-- Dashboard Tab -->
-                    <div id="dashboard-tab" class="tab-content fade-in">
-                        <div class="mb-8">
-                            <h1 class="text-3xl font-bold text-gray-900">Dashboard PoE v0.1</h1>
-                            <p class="text-gray-600">Registro determinístico local</p>
-                        </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                            <div class="card bg-white p-6">
-                                <p class="text-gray-500 text-sm">Créditos Disponíveis</p>
-                                <p class="text-3xl font-bold mt-2" id="credits-count">0</p>
-                            </div>
-                            
-                            <div class="card bg-white p-6">
-                                <p class="text-gray-500 text-sm">Eventos Registrados</p>
-                                <p class="text-3xl font-bold mt-2" id="events-count">0</p>
-                            </div>
-                        </div>
-                        
-                        <div class="card bg-white p-6">
-                            <h2 class="text-xl font-bold mb-4">Status</h2>
-                            <p class="text-gray-600">Sistema funcionando corretamente</p>
-                            <button onclick="testLedger()" class="btn-primary mt-4">Testar Ledger</button>
-                        </div>
-                    </div>
-                    
-                    <!-- Register Event Tab -->
-                    <div id="register-tab" class="tab-content fade-in" style="display: none;">
-                        <div class="mb-8">
-                            <h1 class="text-3xl font-bold text-gray-900">Registrar Evento</h1>
-                        </div>
-                        
-                        <div class="card bg-white p-6">
-                            <input type="text" id="event-hash" class="input-field mb-4" placeholder="Hash SHA-512">
-                            <textarea id="event-metadata" class="input-field h-32 mb-4" placeholder='Metadados JSON'></textarea>
-                            <button onclick="registerEvent()" class="btn-primary">Registrar Evento</button>
-                        </div>
-                    </div>
-                    
-                    <!-- Deposit Tab -->
-                    <div id="deposit-tab" class="tab-content fade-in" style="display: none;">
-                        <div class="mb-8">
-                            <h1 class="text-3xl font-bold text-gray-900">Registrar Depósito</h1>
-                        </div>
-                        
-                        <div class="card bg-white p-6">
-                            <input type="text" id="deposit-hash" class="input-field mb-4" placeholder="Hash do comprovante">
-                            <input type="number" id="deposit-amount" class="input-field mb-4" placeholder="Quantidade">
-                            <textarea id="deposit-metadata" class="input-field h-32 mb-4" placeholder='Metadados'></textarea>
-                            <button onclick="registerDeposit()" class="btn-primary">Registrar Depósito</button>
-                        </div>
-                    </div>
+        
+        <div class="tabs-container">
+            <button class="tab active" data-tab="docs">
+                <span class="tab-icon">📚</span> Documentação
+            </button>
+            <button class="tab" data-tab="endpoint">
+                <span class="tab-icon">🔐</span> Endpoint - Enviar Evento
+            </button>
+            <button class="tab" data-tab="fuel">
+                <span class="tab-icon">⛽</span> PoE – Fuel System
+            </button>
+        </div>
+        
+        <div class="status-info">
+            <strong>Status do Sistema:</strong> 
+            <span id="system-status">Carregando...</span>
+        </div>
+        
+        <div class="content-container">
+            <!-- Aba de Documentação -->
+            <div class="tab-content active" id="docs-content">
+                <div class="iframe-placeholder">
+                    <h3>📚 Documentação do Proof of Event</h3>
+                    <p>A documentação completa do projeto está disponível no repositório GitHub. Aqui você encontrará a especificação técnica, visão arquitetural, exemplos de uso e toda a informação necessária para entender e implementar o protocolo PoE.</p>
+                    <p>O PoE é dividido em <strong>camadas estritamente desacopladas</strong> onde a validação, auditoria e verificação ocorrem fora do sistema, e o protocolo serve apenas para certificação temporal determinística.</p>
+                    <a href="https://github.com/armanfm/proof-of-event" target="_blank" class="direct-link">Abrir Repositório GitHub</a>
                 </div>
             </div>
+            
+            <!-- Aba de Endpoint -->
+            <div class="tab-content" id="endpoint-content">
+                <iframe src="https://blockchain-fragrant-sun-237.fly.dev/poe_producao.html" title="PoE Endpoint - Enviar Evento" id="endpoint-iframe"></iframe>
+            </div>
+            
+            <!-- Aba de Fuel System -->
+            <div class="tab-content" id="fuel-content">
+                <iframe src="https://blockchain-fragrant-sun-237.fly.dev/" title="PoE Fuel System" id="fuel-iframe"></iframe>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Proof of Event (PoE) - Protocolo de certificação temporal determinística | 
+                <span id="current-date">2026-02-03</span>
+            </p>
         </div>
     </div>
 
-    <!-- JavaScript SIMPLIFICADO - Vamos fazer funcionar primeiro -->
     <script>
-        console.log("DEBUG: Script carregando...");
-        
-        // ==============================================
-        // LEDGER BÁSICO
-        // ==============================================
-        const LEDGER_KEY = 'poe_ledger_v1';
-        let ledger = [];
-        
-        // Carregar ledger
-        function loadLedger() {
-            try {
-                console.log("DEBUG: Carregando ledger...");
-                const saved = localStorage.getItem(LEDGER_KEY);
-                ledger = saved ? JSON.parse(saved) : [];
-                console.log("DEBUG: Ledger carregado com", ledger.length, "registros");
-            } catch (e) {
-                console.error("DEBUG: Erro ao carregar ledger:", e);
-                ledger = [];
-            }
-        }
-        
-        // Salvar ledger
-        function saveLedger() {
-            try {
-                localStorage.setItem(LEDGER_KEY, JSON.stringify(ledger));
-                console.log("DEBUG: Ledger salvo");
-            } catch (e) {
-                console.error("DEBUG: Erro ao salvar ledger:", e);
-            }
-        }
-        
-        // ==============================================
-        // FUNÇÕES BÁSICAS
-        // ==============================================
-        
-        // Gerar hash simples
-        async function generateSHA512Hash(input) {
-            // Simplificado para testes
-            const encoder = new TextEncoder();
-            const data = encoder.encode(input);
-            const hashArray = Array.from(data)
-                .map(byte => byte.toString(16).padStart(2, '0'))
-                .slice(0, 10);
-            return hashArray.join('').padEnd(128, '0').slice(0, 128);
-        }
-        
-        // Calcular créditos
-        function calculateAvailableCredits() {
-            const deposits = ledger.filter(item => item.type === 'deposit')
-                                 .reduce((sum, item) => sum + (item.amount || 0), 0);
-            const events = ledger.filter(item => item.type === 'event').length;
-            return Math.max(0, deposits - events);
-        }
-        
-        // Calcular eventos
-        function calculateTotalEvents() {
-            return ledger.filter(item => item.type === 'event').length;
-        }
-        
-        // ==============================================
-        // UI FUNCTIONS
-        // ==============================================
-        
-        // Mostrar tab
-        function showTab(tabName) {
-            console.log("DEBUG: Mostrando tab", tabName);
-            
-            // Esconde todas as tabs
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.style.display = 'none';
-            });
-            
-            // Remove classe active
-            document.querySelectorAll('.nav-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Mostra tab selecionada
-            const tabElement = document.getElementById(`${tabName}-tab`);
-            if (tabElement) {
-                tabElement.style.display = 'block';
-            } else {
-                console.error("DEBUG: Tab não encontrada:", tabName);
-            }
-            
-            // Ativa navegação
-            document.querySelectorAll('.nav-tab').forEach(tab => {
-                if (tab.textContent.includes(tabName.charAt(0).toUpperCase() + tabName.slice(1))) {
-                    tab.classList.add('active');
-                }
-            });
-            
-            updateDashboard();
-        }
-        
-        // Atualizar dashboard
-        function updateDashboard() {
-            console.log("DEBUG: Atualizando dashboard...");
-            const credits = calculateAvailableCredits();
-            const events = calculateTotalEvents();
-            
-            const creditsElement = document.getElementById('credits-count');
-            const eventsElement = document.getElementById('events-count');
-            
-            if (creditsElement) creditsElement.textContent = credits;
-            if (eventsElement) eventsElement.textContent = events;
-            
-            console.log("DEBUG: Dashboard atualizado - créditos:", credits, "eventos:", events);
-        }
-        
-        // Registrar evento
-        async function registerEvent() {
-            console.log("DEBUG: Registrando evento...");
-            const hashInput = document.getElementById('event-hash');
-            const hash = hashInput.value.trim();
-            
-            if (!hash) {
-                alert("Digite um hash");
-                return;
-            }
-            
-            const availableCredits = calculateAvailableCredits();
-            if (availableCredits <= 0) {
-                alert("Créditos insuficientes");
-                return;
-            }
-            
-            try {
-                const timestamp = new Date().toISOString();
-                const proofInput = hash + timestamp;
-                const poeProof = await generateSHA512Hash(proofInput);
-                
-                const eventRecord = {
-                    type: 'event',
-                    id: `event_${Date.now()}`,
-                    hash: hash,
-                    timestamp: timestamp,
-                    poeProof: poeProof,
-                    createdAt: new Date().toISOString()
-                };
-                
-                ledger.push(eventRecord);
-                saveLedger();
-                updateDashboard();
-                
-                hashInput.value = '';
-                alert("Evento registrado!");
-                console.log("DEBUG: Evento registrado com sucesso");
-                
-            } catch (error) {
-                console.error("DEBUG: Erro ao registrar evento:", error);
-                alert("Erro: " + error.message);
-            }
-        }
-        
-        // Registrar depósito
-        async function registerDeposit() {
-            console.log("DEBUG: Registrando depósito...");
-            const hashInput = document.getElementById('deposit-hash');
-            const amountInput = document.getElementById('deposit-amount');
-            
-            const hash = hashInput.value.trim();
-            const amount = parseInt(amountInput.value);
-            
-            if (!hash || !amount || amount < 1) {
-                alert("Preencha todos os campos corretamente");
-                return;
-            }
-            
-            try {
-                const timestamp = new Date().toISOString();
-                const proofInput = hash + timestamp + amount;
-                const poeProof = await generateSHA512Hash(proofInput);
-                
-                const depositRecord = {
-                    type: 'deposit',
-                    id: `deposit_${Date.now()}`,
-                    hash: hash,
-                    amount: amount,
-                    timestamp: timestamp,
-                    poeProof: poeProof,
-                    createdAt: new Date().toISOString()
-                };
-                
-                ledger.push(depositRecord);
-                saveLedger();
-                updateDashboard();
-                
-                hashInput.value = '';
-                amountInput.value = '';
-                alert(`Depósito de ${amount} créditos registrado!`);
-                console.log("DEBUG: Depósito registrado com sucesso");
-                
-            } catch (error) {
-                console.error("DEBUG: Erro ao registrar depósito:", error);
-                alert("Erro: " + error.message);
-            }
-        }
-        
-        // Testar ledger
-        function testLedger() {
-            console.log("DEBUG: Testando ledger...");
-            console.log("Ledger atual:", ledger);
-            console.log("LocalStorage:", localStorage.getItem(LEDGER_KEY));
-            console.log("Créditos:", calculateAvailableCredits());
-            console.log("Eventos:", calculateTotalEvents());
-            alert("Verifique o console (F12)");
-        }
-        
-        // ==============================================
-        // INICIALIZAÇÃO
-        // ==============================================
         document.addEventListener('DOMContentLoaded', function() {
-            console.log("DEBUG: DOM carregado, inicializando...");
+            // Elementos das abas
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const systemStatus = document.getElementById('system-status');
             
-            try {
-                // Carregar dados
-                loadLedger();
+            // Configurar data atual
+            const currentDate = new Date();
+            document.getElementById('current-date').textContent = currentDate.toISOString().split('T')[0];
+            
+            // Função para verificar status dos endpoints
+            async function checkSystemStatus() {
+                const endpoints = [
+                    { url: 'https://blockchain-fragrant-sun-237.fly.dev/poe_producao.html', name: 'Endpoint' },
+                    { url: 'https://blockchain-fragrant-sun-237.fly.dev/', name: 'Fuel System' }
+                ];
                 
-                // Atualizar UI
-                updateDashboard();
+                let allOnline = true;
+                let statusText = '';
                 
-                // Mostrar dashboard inicial
-                showTab('dashboard');
+                for (const endpoint of endpoints) {
+                    try {
+                        const response = await fetch(endpoint.url, { 
+                            method: 'HEAD',
+                            mode: 'no-cors',
+                            cache: 'no-cache'
+                        });
+                        // Como estamos usando no-cors, não podemos verificar o status da resposta
+                        // Mas se não houver erro na requisição, assumimos que está online
+                        statusText += `✅ ${endpoint.name} `;
+                    } catch (error) {
+                        allOnline = false;
+                        statusText += `❌ ${endpoint.name} `;
+                    }
+                }
                 
-                console.log("DEBUG: Sistema inicializado com sucesso!");
-                console.log("Ledger inicial:", ledger);
-                
-            } catch (error) {
-                console.error("DEBUG: Erro na inicialização:", error);
-                alert("Erro ao inicializar: " + error.message);
+                if (allOnline) {
+                    systemStatus.innerHTML = `<span style="color: #4facfe;">${statusText}</span>`;
+                } else {
+                    systemStatus.innerHTML = `<span style="color: #ff6b6b;">${statusText}</span>`;
+                }
             }
+            
+            // Verificar status ao carregar
+            checkSystemStatus();
+            
+            // Adicionar eventos de clique às abas
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    
+                    // Remover classe active de todas as abas
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Adicionar classe active à aba clicada
+                    tab.classList.add('active');
+                    
+                    // Mostrar o conteúdo correspondente
+                    document.getElementById(`${tabId}-content`).classList.add('active');
+                    
+                    // Recarregar iframes quando a aba é ativada
+                    if (tabId === 'endpoint') {
+                        document.getElementById('endpoint-iframe').src = 
+                            document.getElementById('endpoint-iframe').src;
+                    } else if (tabId === 'fuel') {
+                        document.getElementById('fuel-iframe').src = 
+                            document.getElementById('fuel-iframe').src;
+                    }
+                });
+            });
+            
+            // Adicionar botão de recarregar no iframe em caso de erro
+            document.querySelectorAll('iframe').forEach(iframe => {
+                iframe.addEventListener('load', function() {
+                    // Verificar se o iframe carregou corretamente
+                    try {
+                        // Tentar acessar o conteúdo do iframe
+                        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                        
+                        // Verificar se há erros de conexão no conteúdo
+                        if (iframeDoc.body && iframeDoc.body.innerHTML.includes('Erro de conexão') || 
+                            iframeDoc.body.innerHTML.includes('Desconectado')) {
+                            console.log('Erro detectado no iframe');
+                        }
+                    } catch (e) {
+                        // Erro de política de mesma origem - não podemos acessar o conteúdo
+                        console.log('Não é possível verificar conteúdo do iframe devido a políticas de segurança');
+                    }
+                });
+                
+                iframe.addEventListener('error', function() {
+                    console.log('Erro ao carregar iframe');
+                    // Poderíamos mostrar uma mensagem de erro aqui
+                });
+            });
         });
     </script>
 </body>
