@@ -192,6 +192,25 @@ O SPEC é a fonte única de verdade técnica.
 
 ---
 
+### Limite Operacional de Submissão (Anti-abuso)
+
+Para preservar a estabilidade do serviço e evitar abuso, um Certificador PoE
+PODE aplicar limites operacionais à submissão de eventos.
+
+Na implementação de referência, aplica-se:
+
+- limite mínimo de 1 segundo entre submissões por origem.
+
+Este limite:
+
+- NÃO faz parte da prova PoE;
+- NÃO altera o payload_hash;
+- NÃO altera o timestamp canônico emitido;
+- NÃO confere prioridade a nenhum participante;
+- NÃO é comprável ou negociável.
+
+Trata-se exclusivamente de uma política operacional anti-abuso.
+
 ## ⚖️ Licença
 Apache License 2.0
 
