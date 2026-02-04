@@ -73,6 +73,9 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            flex: 1;
+            min-width: 160px;
+            justify-content: center;
         }
         
         .tab:hover {
@@ -177,12 +180,25 @@
             background: rgba(15, 25, 35, 0.9);
         }
         
+        @media (max-width: 1024px) {
+            .tabs-container {
+                flex-wrap: wrap;
+            }
+            
+            .tab {
+                flex: 0 0 50%;
+                min-width: auto;
+                padding: 15px 20px;
+            }
+        }
+        
         @media (max-width: 768px) {
             .tabs-container {
                 flex-direction: column;
             }
             
             .tab {
+                flex: 1;
                 padding: 15px;
                 justify-content: center;
             }
@@ -222,6 +238,9 @@
             <button class="tab" data-tab="fuel">
                 <span class="tab-icon">⛽</span> PoE – Fuel System
             </button>
+            <button class="tab" data-tab="verifier">
+                <span class="tab-icon">🔍</span> Verificador Off-chain
+            </button>
         </div>
         
         <div class="status-info">
@@ -249,6 +268,11 @@
             <div class="tab-content" id="fuel-content">
                 <iframe src="https://blockchain-fragrant-sun-237.fly.dev/" title="PoE Fuel System" id="fuel-iframe"></iframe>
             </div>
+            
+            <!-- NOVA ABA: Verificador Off-chain -->
+            <div class="tab-content" id="verifier-content">
+                <iframe src="https://terra-dourada-brands.fly.dev/" title="PoE Verificador Off-chain" id="verifier-iframe"></iframe>
+            </div>
         </div>
         
         <div class="footer">
@@ -273,7 +297,8 @@
             async function checkSystemStatus() {
                 const endpoints = [
                     { url: 'https://blockchain-fragrant-sun-237.fly.dev/poe_producao.html', name: 'Endpoint' },
-                    { url: 'https://blockchain-fragrant-sun-237.fly.dev/', name: 'Fuel System' }
+                    { url: 'https://blockchain-fragrant-sun-237.fly.dev/', name: 'Fuel System' },
+                    { url: 'https://terra-dourada-brands.fly.dev/', name: 'Verificador' }
                 ];
                 
                 let allOnline = true;
@@ -321,12 +346,10 @@
                     document.getElementById(`${tabId}-content`).classList.add('active');
                     
                     // Recarregar iframes quando a aba é ativada
-                    if (tabId === 'endpoint') {
-                        document.getElementById('endpoint-iframe').src = 
-                            document.getElementById('endpoint-iframe').src;
-                    } else if (tabId === 'fuel') {
-                        document.getElementById('fuel-iframe').src = 
-                            document.getElementById('fuel-iframe').src;
+                    const iframeId = `${tabId}-iframe`;
+                    const iframe = document.getElementById(iframeId);
+                    if (iframe) {
+                        iframe.src = iframe.src;
                     }
                 });
             });
