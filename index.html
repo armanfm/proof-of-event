@@ -33,6 +33,7 @@
             text-align: center;
             border-bottom: 1px solid #2c5364;
             background: rgba(15, 25, 35, 0.9);
+            position: relative;
         }
         
         h1 {
@@ -43,6 +44,35 @@
             background-clip: text;
             color: transparent;
             display: inline-block;
+        }
+        
+        .beta-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, #ff8a00 0%, #e52e71 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            animation: pulse 2s infinite;
+            box-shadow: 0 4px 12px rgba(229, 46, 113, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 4px 12px rgba(229, 46, 113, 0.3);
+            }
+            50% {
+                box-shadow: 0 4px 20px rgba(229, 46, 113, 0.5);
+            }
+            100% {
+                box-shadow: 0 4px 12px rgba(229, 46, 113, 0.3);
+            }
         }
         
         .subtitle {
@@ -203,6 +233,15 @@
                 justify-content: center;
             }
             
+            .beta-badge {
+                position: relative;
+                top: 0;
+                right: 0;
+                display: inline-block;
+                margin-top: 10px;
+                margin-bottom: 10px;
+            }
+            
             .content-container {
                 height: calc(100vh - 280px);
             }
@@ -225,6 +264,7 @@
     <div class="container">
         <header>
             <h1>🔐 Proof of Event (PoE)</h1>
+            <div class="beta-badge">Beta</div>
             <p class="subtitle">Protocolo determinístico para registrar eventos externos como fatos criptográficos ancorados no tempo. A blockchain não decide. Ela testemunha.</p>
         </header>
         
