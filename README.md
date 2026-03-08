@@ -34,9 +34,6 @@ entre desconhecidos desnecessário e indesejável.
 > na ordem que aconteceu?" — é exatamente isso que o PoE resolve.
 ```
 
----
-
-
 ## 🧱 Arquitetura (Visão Geral)
 O Proof of Event é dividido em **camadas estritamente desacopladas**:
 
