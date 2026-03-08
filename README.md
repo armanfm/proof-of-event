@@ -36,29 +36,6 @@ entre desconhecidos desnecessário e indesejável.
 
 ---
 
-**Por que esse parágrafo funciona para o LIFT:**
-```
-"clearing interbancário" — palavra-chave do BCB
-"bancos centrais" — público-alvo imediato
-"sem intermediário central" — soberania
-"CBDCs" — agenda central do LIFT 2026
-"participantes soberanos conhecidos" — liga direto ao BCA
-## 🎯 Objetivo do Projeto
-O PoE foi projetado para ambientes onde:
-
-- o consenso sobre o evento **já existe fora** do sistema;
-- auditoria, rastreabilidade e reexecução são mais importantes que governança;
-- mecanismos como PoW/PoS/staking/votação são indesejáveis;
-- simplicidade, determinismo e compatibilidade institucional são requisitos.
-
-### Exemplos de uso
-- registros institucionais
-- eventos legais/contratuais
-- logs auditáveis
-- sensores e sistemas industriais
-- prova de execução e ocorrência
-
----
 
 ## 🧱 Arquitetura (Visão Geral)
 O Proof of Event é dividido em **camadas estritamente desacopladas**:
