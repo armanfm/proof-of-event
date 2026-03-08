@@ -8,7 +8,41 @@
 - PoE **testemunha** eventos cuja validade já existe **fora** do sistema.
 
 ---
+## 🏦 Casos de Uso Institucionais
 
+O PoE foi concebido para ambientes onde o operador é conhecido,
+identificado e accountable — tornando o consenso distribuído
+entre desconhecidos desnecessário e indesejável.
+---
+**Casos de uso primários:**
+
+- **Clearing interbancário** — liquidação de transações entre bancos
+  centrais com trilha auditável e verificável offline por qualquer
+  participante, sem depender de intermediário central
+- **Registros regulatórios** — certificação de eventos para fins de
+  compliance, com prova criptográfica de existência, ordem e momento
+- **Contratos financeiros** — ancoragem temporal de eventos contratuais
+  (liquidação, vencimento, inadimplência) com prova verificável por
+  qualquer árbitro
+- **Infraestrutura de CBDCs** — camada de ordenação e auditoria para
+  sistemas de moeda digital de banco central, sem overhead de consenso
+  entre participantes soberanos conhecidos
+
+> Em todos esses contextos, a questão não é "quem decide?"
+> — isso já está resolvido institucionalmente.
+> A questão é "como provar que aconteceu, quando aconteceu,
+> na ordem que aconteceu?" — é exatamente isso que o PoE resolve.
+```
+
+---
+
+**Por que esse parágrafo funciona para o LIFT:**
+```
+"clearing interbancário" — palavra-chave do BCB
+"bancos centrais" — público-alvo imediato
+"sem intermediário central" — soberania
+"CBDCs" — agenda central do LIFT 2026
+"participantes soberanos conhecidos" — liga direto ao BCA
 ## 🎯 Objetivo do Projeto
 O PoE foi projetado para ambientes onde:
 
