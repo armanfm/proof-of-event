@@ -9,13 +9,27 @@ pragma solidity ^0.8.24;
  *   - Lista de validadores on-chain (uma chave por nó)
  *   - Quorum de assinaturas obrigatório antes de executar
  *   - Nenhum nó executa sozinho
- *   - Merkle root + assinaturas = prova imutável
+ *   - Domain separation: evita replay entre contratos e redes
+ *   - Qualquer um pode submeter — contrato valida as assinaturas
+ *   - Anti-replay de batches já executados
+ *
+ * Limitações conhecidas:
+ *   - Contrato não verifica que instrucoes pertencem ao Merkle root
+ *     (confia no Go — aceitável no modelo L2 pré-validado)
+ *   - Loop O(n²) nas assinaturas — ok para 3-7 validadores
+ *   - balanceOf no loop é call externo — custo cresce com batch
+ *     (Go já verificou saldo — é último guarda-chuva)
+ *
+ * Roadmap:
+ *   - EIP-712 para melhor UX de assinaturas
+ *   - Slashing on-chain com stake por validador
+ *   - Verificador on-chain opcional
  *
  * Fluxo:
  *   1. Go pré-valida + monta batch
- *   2. N nós assinam o Merkle root
- *   3. Qualquer nó envia batch + assinaturas
- *   4. Contrato verifica quorum de assinaturas
+ *   2. N nós assinam: keccak256("PoEAnchor:" + chainId + address + root + seqs)
+ *   3. Qualquer endereço envia batch + assinaturas
+ *   4. Contrato verifica domain + quorum criptográfico
  *   5. Ancora + liquida atomicamente
  */
 
@@ -214,8 +228,12 @@ contract PoEAnchor {
         returns (uint256 assinaturasValidas)
     {
         // Mensagem que cada nó assinou
+        // Domain separation — evita replay entre contratos/redes
         bytes32 mensagem = keccak256(
             abi.encodePacked(
+                "PoEAnchor:",
+                block.chainid,
+                address(this),
                 merkleRoot,
                 fromSeq,
                 toSeq,
@@ -299,11 +317,12 @@ contract PoEAnchor {
         bytes[]           calldata assinaturas
     )
         external
-        apenasValidador
     {
+        // Qualquer um pode enviar — contrato valida as assinaturas
+        // Mais resiliente: nó comprometido não bloqueia o sistema
         // Anti-replay — esse batch já foi executado?
         bytes32 batchId = keccak256(
-            abi.encodePacked(merkleRoot, fromSeq, toSeq)
+            abi.encodePacked(merkleRoot, fromSeq, toSeq, entryCount)
         );
         require(!batchExecutado[batchId], "batch ja executado");
 
@@ -315,8 +334,20 @@ contract PoEAnchor {
             fromSeq == lastAnchoredSeq + 1,
             "gap na sequencia"
         );
+        require(
+            instrucoes.length == entryCount,
+            "instrucoes inconsistentes"
+        );
+        require(
+            instrucoes.length <= 2000,
+            "batch muito grande"
+        );
 
         // Verifica quorum de assinaturas
+        require(
+            assinaturas.length >= quorumMinimo,
+            "assinaturas insuficientes"
+        );
         uint256 assinaturasValidas = _verificarQuorum(
             merkleRoot, fromSeq, toSeq, entryCount, assinaturas
         );
@@ -335,6 +366,15 @@ contract PoEAnchor {
         for (uint256 i = 0; i < instrucoes.length; i++) {
             Instrucao calldata inst = instrucoes[i];
 
+            // Seq deve estar dentro do range do batch
+            if (inst.seq < fromSeq || inst.seq > toSeq) {
+                emit TransferenciaFalhou(
+                    inst.seq, inst.de, inst.para,
+                    inst.valor, "seq_fora_do_range"
+                );
+                continue;
+            }
+
             if (block.timestamp > inst.deadline) {
                 emit TransferenciaFalhou(
                     inst.seq, inst.de, inst.para,
@@ -343,6 +383,8 @@ contract PoEAnchor {
                 continue;
             }
 
+            // balanceOf é call externo — custo cresce com batch
+            // último guarda-chuva: Go já verificou saldo antes
             if (drex.balanceOf(inst.de) < inst.valor) {
                 emit TransferenciaFalhou(
                     inst.seq, inst.de, inst.para,
